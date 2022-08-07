@@ -1,0 +1,21 @@
+{
+  "name": "backend_lesson",
+  "version": "1.0.0",
+  "description": "pr-coding backend lesson",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pr-coding",
+    "backend"
+  ],
+  "author": "jyc",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.11.0",
+    "morgan": "^1.10.0"
+  }
+}
