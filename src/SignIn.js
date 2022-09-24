@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import {
   Avatar, Button, CssBaseline, FormControl, Input, InputLabel, Checkbox,
@@ -8,7 +8,9 @@ import LockIcon from '@material-ui/icons/LockOutlined';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {AppContext} from './app-context';
 import Fetch from './fetch';
-import {googleLoginInit, googleSignIn, googleSignOut} from './googleAuth';
+import GoogleSignInBtn from './GoogleSignIn';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import GoogleConfig from './authSecret';
 
 const styles = theme => ({
   layout: {
@@ -42,7 +44,6 @@ const styles = theme => ({
     justifyContent : 'center',
     alignItems: 'center',
     padding: `${theme.spacing(1)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
-    //padding: theme.spacing(1),
   },
   radioGroup: {
     display: 'flex',
@@ -55,10 +56,10 @@ const styles = theme => ({
   },
   form: {
     width: '100%', // Fix IE11 issue.
-    //marginTop: theme.spacing(1),
-    //marginBottom : theme.spacing(1),
   },
   submit: {
+    display : 'flex',
+    justifyContent : 'center',
     marginTop: theme.spacing(2),
   },
 });
@@ -74,30 +75,7 @@ class _SignIn extends React.Component {
       password : "",
       remember : false,
       errorMsg : "",
-      canSignIn : false,
     };
-  }
-
-  onSuccessGlogin = () => {
-    this.setState({canSignIn : true});
-    //this.context.snackbar("success", "")
-  }
-
-  onFailureGlogin = (error) => {
-    let context = this.context;
-    let errorMsg = 'Google Login이 활성화 되지 않았습니다.';
-    if(context)
-      context.snackbar("warning", errorMsg);
-    if(error.details.startsWith('Cookie'))
-      errorMsg = "구글 로긴을 위해, 쿠키를 허용해 주세요.";
-    else
-      errorMsg = errorMsg;
-    this.setState({errorMsg});
-  }
-
-  componentDidMount () {
-    if(this.props.signInMode == 'Google')
-      googleLoginInit(this.onSuccessGlogin, this.onFailureGlogin);
   }
 
   handleInputChange = (controlName) => (event) => {
@@ -126,6 +104,35 @@ class _SignIn extends React.Component {
     });
   }
 
+  onSuccessGoogleSignIn = (userProfile) => {
+    let context = this.context;
+    
+    Fetch.googleLogin(userProfile).then((d) => {
+      if(d.msg === "OK") {
+        context.snackbar("success", "Login Success");
+        //d.user.imageUrl = imageUrl;
+        this.props.onUserSignIn(d.user);
+        //console.log(d);
+      }
+    }).catch(error => {
+      console.log("Error Occurred when Sign In");
+      console.log(error);
+      if(error.startsWith('popup'))
+        context.snackbar("warning", 'login이 취소되었습니다.');
+    });
+    
+    return;
+  }
+
+  onFailureGoogleSignIn = (error) => {
+    let context = this.context
+    console.log("Error Occurred when Sign In");
+    console.log(error);
+    if(error.startsWith('popup'))
+      context.snackbar("warning", 'login이 취소되었습니다.');
+    console.log("Google SignIn Failed");
+  }
+
   handleSignInBtn = (e) => {
     e.preventDefault();
     let context = this.context;
@@ -147,35 +154,6 @@ class _SignIn extends React.Component {
       }
     });
   }
-
-  handleGoogleSignInBtn = (e) => {
-    e.preventDefault();
-    let context = this.context;
-    
-    this.setState({errorMsg : ''});
-    googleSignIn().then((d) => {
-      let imageUrl = d.getImageUrl();
-      Fetch.googleLogin(d).then((d) => {
-        if(d.msg === "OK") {
-          context.snackbar("success", "Login Success");
-          d.user.imageUrl = imageUrl;
-          this.props.onUserSignIn(d.user);
-          //console.log(d);
-        }
-        else {
-          context.snackbar("error", d.msg);
-        }
-      });
-    }).catch(error => {
-      console.log("Error Occurred when Sign In");
-      console.log(error);
-      if(error.error.startsWith('popup'))
-        context.snackbar("warning", 'login이 취소되었습니다.');
-    });
-    
-    return;
-  }
-
   render () {
     const { classes, signInMode } = this.props;
   
@@ -192,7 +170,11 @@ class _SignIn extends React.Component {
           
           {/*  <FormControl margin="normal" required fullWidth> */}
           {signInMode == 'Google' && 
-            <img src="/static/images/intro_ajou_symbol.png" style={{objectFit : 'contain'}}/> }
+          <div style={{marginBottom: 15}}>
+            <img src="/static/images/intro_ajou_symbol.png" 
+              style={{objectFit : 'contain'}}/> 
+          </div>
+          }
           {/*  </FormControl> */}
           
           <form className={classes.form} /* onSubmit={this.handleSignInBtn} */ > 
@@ -215,26 +197,31 @@ class _SignIn extends React.Component {
                     control={<Checkbox name = "remember" color="primary" onChange={this.handleInputChange("remember")}/>}
                     label="Remember me" labelPlacement="end" />
             </FormControl>
-          </div> }
-            <Button
+           <Button 
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={ (signInMode == 'Google') ? this.handleGoogleSignInBtn : this.handleSignInBtn} 
-              disabled={ (signInMode == 'Google') ? !this.state.canSignIn : false}
+              onClick={(signInMode == 'dev') ? this.handleSignInBtn : this.handleGoogleSignInBtn} 
+              disabled={ false }
               >
-              Sign in By Google
-            </Button>
-            {signInMode == 'Google' && <div>
+              Sign in
+            </Button> </div>}
+            {signInMode == 'Google' && <div className={classes.submit}>
             {/* <Typography className={classes.submit} fullWidth centered alignItems='center'> 
               <Button onClick={this.handleForgotPassword} > Login With Google</Button> 
               Google 인증(OAuth)으로 Login 합니다.
-            </Typography>*/}
+            </Typography>
+            <GoogleSignInBtn style = {{marginTop : 20}}
+              hostedDomain={GoogleConfig.hosted_domain} onUserSignIn={this.props.onUserSignIn}/>*/}
+              <GoogleSignInBtn onSuccess = {this.onSuccessGoogleSignIn} onError={this.onFailureGoogleSignIn}
+                onUserSignIn={this.props.onUserSignIn} >
+              </GoogleSignInBtn>
+              <div>
             <Typography className={classes.submit} fullWidth centered alignItems='center'> 
               {this.state.errorMsg}
-            </Typography>
+            </Typography></div>
             </div>}
           </form>
         </div>
@@ -251,38 +238,11 @@ class _Register extends React.Component {
     this.state = {
       academicID : "",
       dept : "",
-      radioValue : "U",
+      primary_role : "U",
       errorMsg : "",
-      canSignIn : false,
       confirmPrivacy : false,
-      //deptList : [],
     };
   }
-
-  onSuccessGlogin = () => {
-    this.setState({canSignIn : true});
-    //this.context.snackbar("success", "")
-  }
-
-  onFailureGlogin = (error) => {
-
-    let context = this.context;
-    let errorMsg = 'Google Login이 활성화 되지 않았습니다.';
-    if(context)
-      context.snackbar("warning", errorMsg);
-    
-    if(error.details.startsWith("Cookie"))
-      errorMsg = "구글 로긴을 위해, 쿠키를 허용해 주세요.";
-    this.setState({errorMsg});
-  }
-
-  componentDidMount () {
-    googleLoginInit(this.onSuccessGlogin, this.onFailureGlogin);
-  }
-
-//  handleRadioChange = (event) => {
-//    this.setState({radioValue: event.target.value});
-//  }
 
   handleInputChange = (controlName) => (event) => {
     if(controlName == 'confirmPrivacy') {
@@ -292,13 +252,13 @@ class _Register extends React.Component {
       this.setState({[controlName] : event.target.value});
   }
 
-  verifyInputData = (id, dept) => {
+  verifyInputData = (e) => {
+    const {academicID, dept, primary_role} = this.state;
+
     const academicIDRegex = /^2[0-9]{8}$/g;
-    console.log(id);
-    if(academicIDRegex.test(id)) {
-      let first4 = parseInt(id.substr(0, 4));
+    if(academicIDRegex.test(academicID)) {
+      let first4 = parseInt(academicID.slice(0, 4));
       let thisYear = parseInt((new Date()).getFullYear());
-      console.log(first4, thisYear);
       if (first4 > thisYear) {
         let errorMsg = "Invalid academic ID. Please, give me a valid academic ID.";
         this.setState({errorMsg})
@@ -310,50 +270,35 @@ class _Register extends React.Component {
       this.setState({errorMsg})
       return false;
     } 
+
     return true;
   }
 
-  handleRegisterBtn = (e) => {
-    e.preventDefault();
+  handleRegisterBtn = (res) => {
+    //e.preventDefault();
     let context = this.context;
     
     this.setState({errorMsg : ''});
-    console.log(e);
-    const formdata = new FormData(e.target);
-    const data = {
-      //email: formdata.get("email"),
-      //username: formdata.get("username"),
-      academicID : formdata.get("academicID"),
-      dept: formdata.get("dept"),
-      primary_role: formdata.get("role")
-    };
-    
-   if(!this.verifyInputData(formdata.get('academicID'), formdata.get('dept'))) {
-    console.log("not verified");
-    return;
-    }   
-
-    googleSignIn().then((res) => {
-      data["email"] = res.getEmail();
-      data["name"] = res.getName();
-      data["imageUrl"] = res.getImageUrl();
-      data["loginType"] = "Google";
-      Fetch.registerUser(data).then((d) => {
-        if(d.msg != "OK")
-          context.snackbar("error", d.msg);
-        else {
-          context.snackbar("success", "회원 가입이 완료되었습니다.");
-          this.props.onMoveTab(0);   
-        }
-      }).catch(e => {
-        console.log("Fetch.registerUser Error", e);
-        context.snackbar("error", "Fetch.registerUser Error")
-      });
-    }).catch(error => {
-      console.log("Google Sign In Error", error);
-      if(error.error.startsWith('popup'))
-        context.snackbar("warning", '인증이 취소되었습니다.');
-    })
+    let data = {}
+    data["academicID"] = this.state.academicID;
+    data["dept"] = this.state.dept;
+    data["primary_role"] = this.state.primary_role;
+    data["email"] = res.email; //getEmail();
+    data["name"] = res.name; //getName();
+    data["picture"] = res.picture; //getImageUrl();
+    data["loginType"] = "Google";
+    console.log(data)
+    Fetch.registerUser(data).then((d) => {
+      if(d.msg != "OK")
+        context.snackbar("error", d.msg);
+      else {
+        context.snackbar("success", "회원 가입이 완료되었습니다.");
+        this.props.onMoveTab(0);   
+      }
+    }).catch(e => {
+      console.log("Fetch.registerUser Error", e);
+      context.snackbar("error", "Fetch.registerUser Error")
+    });
     return;
   }
 
@@ -379,13 +324,13 @@ class _Register extends React.Component {
             */}
             <FormControl margin="normal" required >
               <InputLabel htmlFor="academicID">학번 (또는 임용번호)</InputLabel>
-              <Input id="academicID" name="academicID" />
+              <Input id="academicID" name="academicID" onChange={this.handleInputChange("academicID")}/>
             </FormControl>
 
 
             <FormControl margin="normal" required >
               <InputLabel htmlFor="dept">학과</InputLabel>
-              <Input id="dept" name="dept" />
+              <Input id="dept" name="dept" onChange={this.handleInputChange("dept")}/>
             </FormControl>
 
             {/*
@@ -412,16 +357,16 @@ class _Register extends React.Component {
             <FormControl component="fieldset" margin="normal" required fullWidth>
               <FormLabel component="legend">역할</FormLabel>
               <RadioGroup className={classes.radioGroup} aria-label="role" name="role" 
-  	  	        value={this.state.radioValue} onChange={this.handleInputChange("radioValue")}>
+  	  	        value={this.state.primary_role} onChange={this.handleInputChange("primary_role")}>
                 <FormControlLabel style={{ margin: 'auto' }} value="O" control={<Radio color="primary" />}
                   label="교수" labelPlacement="end" />
                 <FormControlLabel style={{ margin: 'auto' }} value="U" control={<Radio color="primary" />}
                   label="학생" labelPlacement="end" />
               </RadioGroup>
             </FormControl>
-            <Typography className={classes.submit} fullWidth centered variant='body2'> 
-              학생은 교과목 그룹에 속해야 사용할 수 있으며, 교수 역할은 학과 및 임용번호 확인 후 가입이 완료됩니다.
-              귀하의 Gmail 암호는 저장되지 않습니다.
+            {/* 학생은 교과목 그룹에 속해야 사용할 수 있으며, 교수 역할은 학과 및 임용번호 확인 후 가입이 완료됩니다.*/}
+            <Typography className={classes.submit} fullWidth centered variant='body2'>  
+              귀하의 암호는 Google이 보관합니다.
             </Typography>
 
             <Typography className={classes.submit} fullWidth centered variant='body1' > 
@@ -438,7 +383,11 @@ class _Register extends React.Component {
                     onChange={this.handleInputChange("confirmPrivacy")}/>}
                     label="동의합니다." labelPlacement="end" />
             </FormControl>
+            <GoogleSignInBtn onSuccess={this.handleRegisterBtn} 
+              beforeSignIn={this.verifyInputData}
+              disabled={this.state.academicID.length < 9  || this.state.dept.length < 1 || !this.state.confirmPrivacy}/>
 
+            {/*
             <Button
               type="submit"
               fullWidth
@@ -446,10 +395,11 @@ class _Register extends React.Component {
               color="primary"
               className={classes.submit}
               //onClick={this.handleRegisterBtn} // Must remove to get FormData. FormData uses Form submit
-              disabled={!this.state.canSignIn || !this.state.confirmPrivacy}
+              disabled={this.state.academicID.length < 9  || this.state.dept.length < 1 || !this.state.confirmPrivacy}
             >
               Register
             </Button>
+            */}
             {/*
             <Typography className={classes.submit} fullWidth centered> 
                Google 인증(OAuth)으로 Ajou Email Address와 이름을 확인합니다. 
@@ -486,7 +436,6 @@ class SignInForm extends React.Component {
     super(props, context);
     this.state = {
       selectedTab: 0,
-      canSignIn : false,
       signInMode : 'Google',
     };
   }
@@ -513,6 +462,7 @@ class SignInForm extends React.Component {
       <React.Fragment>
         {/* <CssBaseline />*/}
         {/* <div className={classes.layout}> */}
+        <GoogleOAuthProvider clientId={GoogleConfig.clientId}>
           <Paper className={classes.paper}>
             <Tabs
               /* className_={classes.tabs} */
@@ -526,11 +476,15 @@ class SignInForm extends React.Component {
               <Tab label="Sign In" />
               <Tab label="Register" />
             </Tabs>
-            {this.state.selectedTab == 0 && <SignIn onUserSignIn={this.props.onUserSignIn} 
-                  canSignIn = {this.state.canSignIn} signInMode={this.state.signInMode}/>}
-            {this.state.selectedTab == 1 && <Register onMoveTab={this.forceTabChange}  
-                  canRegister = {this.state.canSignIn} />}
+            {this.state.selectedTab == 0 && 
+              <SignIn onUserSignIn={this.props.onUserSignIn} 
+                  signInMode={this.state.signInMode}/>}
+            {this.state.selectedTab == 1 && 
+              <Register onMoveTab={this.forceTabChange} />}
           </Paper>
+          <div style={{width: '100%', minHeight: '60px'}}></div>
+        </GoogleOAuthProvider>;
+
         {/* </div> */}
       </React.Fragment>
     );

@@ -306,6 +306,8 @@ class MyPage extends React.Component {
       notebook.progress = true;
       this.setState({});
 
+      console.log(notebook);
+
       Fetch.startNotebook(this.state.user.id, notebook).then(d => {
         /* !!!!  WARNING  !!!! 
           When launcing docker contanier on the same network  with https protocol, 
@@ -346,15 +348,18 @@ class MyPage extends React.Component {
         notebook.status = null;
         return;
       }
+      /*
       let url = "/notebook/" + this.props.user.id + "/"+notebook.notebookName;
       notebook.url = url;
-
-      notebook.window = window.open(url, this.props.user.id + "_" + notebook.notebookName);
-      /*
-      let urlSuffix = (notebook.notebookName == 'sshd') ? '' : `?token=${notebook.passcode}`
-      notebook.url = `/notebook/${this.props.user.id}/${notebook.notebookName}${urlSuffix}`;
+      notebook.window = window.open(url, this.props.user.id + "_" + notebook.notebookName); */
+      let urlSuffix = (notebook.notebookName == 'term') ? '' : `?token=${notebook.passcode}`
+      if (notebook.notebookName == 'code') {
+        notebook.url = `/code/${this.props.user.id}/${notebook.notebookName}/`
+      }
+      else {
+        notebook.url = `/notebook/${this.props.user.id}/${notebook.notebookName}${urlSuffix}`;
+      }
       notebook.window = window.open(notebook.url, `${this.props.user.id}_${notebook.notebookName}`); 
-      */   
     })
   }
  
@@ -403,12 +408,14 @@ class MyPage extends React.Component {
     }
   }
 
+  /*
   handleConfirmationDelete = (boolDelete) => (e) => {
     this.setState({openConfirmationDelete : false});
     if(boolDelete) {
       this.deleteProject(this.state.currentProject)
     }
   }
+  */
 
   handleTabChange = (e, newTab) => {
     /*
