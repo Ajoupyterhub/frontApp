@@ -1,5 +1,5 @@
 import config from './config';
-import {googleSignOut} from './googleAuth';
+//import {googleSignOut} from './googleAuth';
 
 const Fetch = {
 
@@ -22,8 +22,14 @@ googleLogin : function (user) {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({'loginType' : 'Google', 'email' : user.getEmail()})})
+        body: JSON.stringify({'loginType' : 'Google', 'email' : user.email})})
     .then(d => d.json());
+        
+    /*
+    return fetch("/oauth/google__/authorize", {mode : 'no-cors'}).then(d => d.text)
+    .catch(e=>{
+        console.log(e);
+    });*/    
 },
 
 logout : function(userEmail, signInMode) {
@@ -71,11 +77,6 @@ stopNotebook : function (userID, notebook) {
       }).then((d)=> d.json());
 },
 
-deleteProject : function(projID) {
-    return fetch(`/project/${projID}`, { method : 'DELETE' })
-        .then((d)=> d.json());
-},
-
 getNotebooks : function(userID) {
     return fetch(`/user/${userID}`).then(d => d.json());
 },
@@ -90,22 +91,6 @@ registerUser : function(data) {
 
 forgotPassword : function(data) {
     return fetch('/account/forgotPassword', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify(data),
-      }).then((response) => response.json());
-},
-
-updateProject : function(data) {
-    return fetch(`/project/${data.projID}`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify(data),
-        }).then((response) => response.json());
-},
-
-newProject : function(data) {
-    return fetch('/project', {
         method: 'POST',
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify(data),
