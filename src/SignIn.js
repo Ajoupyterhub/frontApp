@@ -255,11 +255,11 @@ class _Register extends React.Component {
   verifyInputData = (e) => {
     const {academicID, dept, primary_role} = this.state;
 
-    const academicIDRegex = /^2[0-9]{8}$/g;
+    const academicIDRegex = /^[0-9]{9}$/g;
     if(academicIDRegex.test(academicID)) {
       let first4 = parseInt(academicID.slice(0, 4));
       let thisYear = parseInt((new Date()).getFullYear());
-      if (first4 > thisYear) {
+      if (first4 < 1980 || first4 > thisYear) {
         let errorMsg = "Invalid academic ID. Please, give me a valid academic ID.";
         this.setState({errorMsg})
         return false;

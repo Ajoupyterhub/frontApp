@@ -2,6 +2,7 @@ import React, {useContext} from 'react'
 import {useGoogleLogin} from '@react-oauth/google'
 import { AppContext } from './app-context';
 import {Button} from '@material-ui/core';
+import GoogleConfig from './authSecret';
 
 const GoogleSignInBtn = (props) => {
     let context = useContext(AppContext);
@@ -39,7 +40,7 @@ const GoogleSignInBtn = (props) => {
             props.onFailure(e)
           }
         },
-        hosted_domain: 'ajou.ac.kr', 
+        hosted_domain: GoogleConfig.hosted_domain, //'ajou.ac.kr', 
         prompt: 'select_account', 
         flow: 'implicit',
         scope: 'profile email',
