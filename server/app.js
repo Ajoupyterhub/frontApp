@@ -149,20 +149,20 @@ app.put('/group/:groupID', (req, res) => {
 app.get('/group/:groupID/members', (req, res) => {
   res.json({ "msg" : "OK" , "data" : [
     { id : "jyc", name : "훈남", email : "jyc@jclab.org", dept: "jclab", role: "O", status : "OK"},
-    { id : "a", name : "홍길동",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "A", status : "OK"},
-    { id : "b", name : "모모",email : "jyc@jclab.org", dept: "SW", role: "U", status : "pending"},
-    { id : "c", name : "제니",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},
-    { id : "d", name : "학생1",email : "jyc@jclab.org", dept: "소프트웨어학과C", role: "U", status : "OK"},
-    { id : "e", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e1", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e2", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e3", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e4", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e5", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e6", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e7", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e8", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e9", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "a", name : "홍길동",email : "a@jclab.org", dept: "소프트웨어학과", role: "A", status : "OK"},
+    { id : "b", name : "모모",email : "b@jclab.org", dept: "SW", role: "U", status : "pending"},
+    { id : "c", name : "제니",email : "c@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},
+    { id : "d", name : "학생1",email : "d@jclab.org", dept: "소프트웨어학과C", role: "U", status : "OK"},
+    { id : "e", name : "학생2",email : "e@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e1", name : "학생3",email : "e1@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e2", name : "학생4",email : "e2@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e3", name : "학생5",email : "e3@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e4", name : "학생6",email : "e4@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e5", name : "학생7",email : "e5@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e6", name : "학생8",email : "e6@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e7", name : "학생9",email : "e7@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e8", name : "학생10",email : "e8@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e9", name : "학생11",email : "e9@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
   ]})
 })
 
@@ -173,7 +173,8 @@ app.post('/group/:groupID/members', (req, res) => {
 })
 
 app.delete('/group/:groupID/members', (req, res) => {
-  res.json({deleted : req.body.members})
+  console.log(req.body)
+  res.json({deleted : req.body})
 })
 
 app.put('/group/:groupID/members', (req, res) => {
