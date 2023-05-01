@@ -1,11 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {
-  Avatar, Button, Box, CssBaseline, FormControl, Input, InputLabel, Checkbox,
-  Paper, Typography, Tabs, Tab, FormControlLabel, FormLabel, RadioGroup, Radio
+import React, {useContext, useState} from 'react';
+import { FormControl, Input, InputLabel, Checkbox, 
+  Typography, FormControlLabel, FormLabel, RadioGroup, Radio
 } from '@mui/material';
-import LockIcon from '@mui/icons-material/LockOutlined';
 import {AppContext} from '@lib/app-context';
-import Fetch from '@lib/fetch';
+import Server from '@lib/server';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
 
 const styles = {
@@ -110,7 +108,7 @@ const RegisterForm = (props) => {
     data["picture"] = res.picture; //getImageUrl();
     data["loginType"] = "Google";
     console.log(data)
-    Fetch.registerUser(data).then((d) => {
+    Server.registerUser(data).then((d) => {
       if(d.msg != "OK")
         context.snackbar("error", d.msg);
       else {
@@ -118,8 +116,8 @@ const RegisterForm = (props) => {
         //props.onMoveTab(0);   
       }
     }).catch(e => {
-      console.log("Fetch.registerUser Error", e);
-      context.snackbar("error", "Fetch.registerUser Error")
+      console.log("Server.registerUser Error", e);
+      context.snackbar("error", "Server.registerUser Error")
     });
     return;
   }

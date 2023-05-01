@@ -1,11 +1,10 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
-  Avatar, Box, Button, CssBaseline, FormControl, Input, InputLabel, Checkbox,
-  Paper, Typography, Tabs, Tab, FormControlLabel, FormLabel, RadioGroup, Radio
-} from '@mui/material';
+  Avatar, Box, Button, FormControl, Input, InputLabel, Checkbox,
+  Typography,  FormControlLabel} from '@mui/material';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import {AppContext} from '@lib/app-context';
-import Fetch from '@lib/fetch';
+import Server from '@lib/server';
 
 const styles = {
   layout: {
@@ -89,7 +88,7 @@ const SignInForm = (props) => {
       context.snackbar("error", "Invalid email. Please, give me a valid email");
       return;
     }
-    Fetch.forgotPassword(data).then((rv) => {
+    Server.forgotPassword(data).then((rv) => {
       if(rv.msg == "OK") {
         context.snackbar("success", "Please refer to your email");
       }
@@ -109,9 +108,9 @@ const SignInForm = (props) => {
       remember: login.remember, 
     };
 
-    Fetch.login(data).then((d) => {
+    Server.login(data).then((d) => {
       if(d.msg === "OK") {
-        context.snackbar("success", "Login Success");
+        context.snackbar("success", "Welcome to Ajoupyterhub");
         props.onUserSignIn(d.user);
         console.log(d);
       }

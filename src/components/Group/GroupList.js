@@ -5,7 +5,7 @@ import { AppContext } from '@lib/app-context';
 import GroupPage from '@components/Group/GroupPage';
 import MemberPage from '@components/Group/MemberPage';
 import CustomTable from '@components/CustomTable';
-import Fetch from '@lib/fetch.js';
+import Server from '@lib/server';
 
 const styles = {
   root: {
@@ -97,7 +97,7 @@ const GroupList = (props) => {
       return;
     }
 
-    let newState = {};
+    let newState = {...state};
 
     switch (action) {
       case 0:
@@ -129,7 +129,7 @@ const GroupList = (props) => {
     let userID = (context.currentUser) ? context.currentUser.email.split('@')[0] : '';
     setState({ ...state, userID });
     //console.log(userID);
-    Fetch.getGroupListByUserID(userID)
+    Server.getGroupListByUserID(userID)
       .then((groupList) => {
         groupList.map((grp) => {
           const btnId = `btn-moreActions-${grp.groupID}`;
@@ -169,7 +169,7 @@ const GroupList = (props) => {
         memoryLimit: d.memoryLimit,
       }
       if (state.currentGroup) {
-        Fetch.updateGroup(state.currentGroup.groupID, data).then((res) => {
+        Server.updateGroup(state.currentGroup.groupID, data).then((res) => {
           if (res.msg == "OK") {
             let grp = groupList.find((g) => g.groupID == d.groupID);
             grp.name = data.name;
@@ -186,7 +186,7 @@ const GroupList = (props) => {
         });
       }
       else {
-        Fetch.addGroup(data).then((res) => {
+        Server.addGroup(data).then((res) => {
           if (res.msg == "OK") {
             const btnId = `btn-moreActions-${res.groupID}`;
             let list = [...groupList];

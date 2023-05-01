@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import { Button,  Chip, TextField, Dialog, DialogActions, DialogContent, 
   DialogContentText, DialogTitle, CircularProgress, Paper } from '@mui/material';
 import { green } from '@mui/material/colors';
-import Fetch from '../../lib/fetch';
-import config from '../../lib/config';
+import Server from '@lib/server';
+import config from '@lib/config';
 
 const styles = {
   progress: {
@@ -63,7 +63,7 @@ const AddMembersDlg = (props) => {
     }
     console.log(invalid_emails);
     setState({...state, loading : true});
-    Fetch.addMembers(props.groupID, validEmails).then(data => {
+    Server.addMembers(props.groupID, validEmails).then(data => {
       /*
       invalid_emails.push(...(
         validEmails.filter((e) => 
@@ -128,7 +128,7 @@ const AddMembersDlg = (props) => {
           </DialogContent>
           }
           <DialogActions>
-            <Button onClick={() => {cleanState(); props.onClose(null, null)}} color="primary">
+            <Button onClick={() => {cleanState(); props.onClose([], [])}} color="primary">
               Cancel
             </Button>
             <Button onClick={addMember} color="primary">

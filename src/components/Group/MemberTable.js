@@ -10,7 +10,7 @@ import {
 } from '@mui/icons-material';
 import AddMembersDlg from '@components/Group/AddMembersDlg';
 import ConfirmDialog from '@components/ConfirmDialog';
-import Fetch from '@lib/fetch';
+import Server from '@lib/server';
 import config from '@lib/config';
 import { AppContext } from '@lib/app-context';
 
@@ -98,7 +98,7 @@ const MemberTable = (props) => {
   let context = useContext(AppContext);
 
   const syncMembers = () => {
-    Fetch.getMembersByGroupID(props.groupID).then((d) => {
+    Server.getMembersByGroupID(props.group.groupID).then((d) => {
       setMembers([...d["data"]]);
     });
   }
@@ -167,7 +167,7 @@ const MemberTable = (props) => {
       return;
     }
     let role = (m.role == 'U') ? 'S' : 'U';
-    Fetch.changeRole(props.group.groupID, user, role).then(data => {
+    Server.changeRole(props.group.groupID, user, role).then(data => {
       if (data.roleChangeFailed && data.roleChangeFailed.length > 0)
         failed.push(...data.roleChangeFailed)
       console.log(failed);
@@ -189,7 +189,7 @@ const MemberTable = (props) => {
       return;
     let { selected } = state;
 
-    Fetch.deleteMembers(props.group.groupID, users).then(data => {
+    Server.deleteMembers(props.group.groupID, users).then(data => {
       members = members.filter(u => { return (!data.deleted.includes(u.email)) });
       data.deleted?.forEach(d => { selected[d] = false; });
       setState({ ...state, selected: { ...selected }, menuAnchor : null });
@@ -206,6 +206,16 @@ const MemberTable = (props) => {
     console.log('Checked Users: ', checkedUsers);
     deleteUsers(checkedUsers);
   }
+  /*  column 설명 
+  const columns = [
+    { "displayName" : "회원 id", "key" : "id"},
+    { "displayName" : "이름", "key" : "name"},
+    { "displayName" : "email", "key" : "email"},
+    { "displayName" : "소속", "key" : "dept"},
+    { "displayName" : "역할", "key" : "role"},  //이 그룹에서의 역할 표시. A 그룹 학생, B 그룹 조교 가능
+    { "displayName" : "  ", "key" : "status"}, //가입상태 보여주기... pending ==> 가입대기중
+  ];
+  */
 
   const displayTableHead = () => {
     return (
@@ -286,10 +296,10 @@ const MemberTable = (props) => {
         //if(! members.find(i => i.id === m.id)) { // 중복제거 
         members.push(m);
         //}
-        selected.delete(m.email);
+        selected[m.email] = false;
       });
       setState({
-        ...state, memberDlgOpen: open, selected, invalid_members,
+        ...state, memberDlgOpen: open, selected : {...selected}, invalid_members,
         confirmDlgOpen: ((invalid_members && invalid_members.length > 0) ? true : false)
       });
       setMembers([...members]);

@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Avatar, Typography, Box, IconButton, CircularProgress, Popover,
-} from '@mui/material';
+import { Avatar, Typography, Box, Popover} from '@mui/material';
 
 import { AppContext } from '../../lib/app-context';
 

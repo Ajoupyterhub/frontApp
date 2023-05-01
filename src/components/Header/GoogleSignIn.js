@@ -3,7 +3,7 @@ import { useGoogleLogin } from '@react-oauth/google'
 import { AppContext } from '@lib/app-context';
 import { Button, IconButton } from '@mui/material';
 import GoogleConfig from '@lib/authSecret';
-import Fetch from '@lib/fetch';
+import Server from '@lib/server';
 
 const GoogleSignInBtn = (props) => {
   let context = useContext(AppContext);
@@ -17,7 +17,7 @@ const GoogleSignInBtn = (props) => {
 
   const handleGoogleLoginSuccess = (userProfile) => {
 
-    Fetch.googleLogin(userProfile).then((d) => {
+    Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
         context.loginUser(d.user);
       }

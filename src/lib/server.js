@@ -1,7 +1,6 @@
 import config from './config';
-//import {googleSignOut} from './googleAuth';
 
-const Fetch = {
+const Server = {
 
 login : function(data) {
     return fetch("/login", {
@@ -257,6 +256,6 @@ export function getAllPosts(page = 0) {
 
 
 
-export default Fetch;
+export default Server;
 
 

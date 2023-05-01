@@ -2,12 +2,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { AppBar, Toolbar, Typography, Box, IconButton, Popover} from '@mui/material';
 import {AppContext} from '@lib/app-context';
-import GoogleSignInBtn from '@components/Header/GoogleSignIn';
-import RegisterForm from '@components/Header/Register';
-import SignInForm from '@components/Header/SignIn';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import GoogleConfig from '@lib/authSecret';
-
 import Profile from './Profile';
 import Auth from './Auth';
 
@@ -39,23 +33,6 @@ const styles = {
   
 const Header = (props) => {
     let {currentUser} = useContext(AppContext);
-
-    /*
-  onUserSignIn = (user) => {
-    //console.log(user.imageUrl);
-    Fetch.getNotebooks(user.id).then(d => {
-      let firstOne = [] // (user.primary_role == 'O') ? [{projID : 0}] : [];
-      //let notebooks = firstOne.concat(d);
-      user.notebooks = d //[...notebooks];
-      //console.log(user.notebooks)
-      //this.setState({notebooks});
-      this.setState({mainForm : "mypage", user});
-    });
-  }
-
-
-
-*/
 
     return (
       <AppBar sx={styles.top} id = "__header__">

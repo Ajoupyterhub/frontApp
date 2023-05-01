@@ -11,7 +11,7 @@ import { green } from '@mui/material/colors';
 import GroupList from '@components/Group/GroupList';
 import { AppContext } from '@lib/app-context';
 import ConfirmDialog from '@components/ConfirmDialog';
-import Fetch from '@lib/fetch';
+import Server from '@lib/server';
 
 const styles = {
   root: {
@@ -164,7 +164,7 @@ const MyPage = (props) => {
   })
 
   useEffect(() => {
-    Fetch.getNotebooks(user.id).then(d => {
+    Server.getNotebooks(user.id).then(d => {
       setState({ ...state, notebooks: d });
     });
   }, [user])
@@ -192,7 +192,7 @@ const MyPage = (props) => {
 
       console.log(notebook);
 
-      Fetch.startNotebook(user.id, notebook).then(d => {
+      Server.startNotebook(user.id, notebook).then(d => {
         /* !!!!  WARNING  !!!! 
           When launcing docker contanier on the same network  with https protocol, 
           Chrome(ubuntu version-currently figured out) emit ERR_NETWORK_CHANGED Exception.
@@ -217,7 +217,7 @@ const MyPage = (props) => {
   }
 
   const handleWindowBtnClick = (notebook) => () => {
-    Fetch.statusNotebook(user.id, notebook.notebookName).then(d => {
+    Server.statusNotebook(user.id, notebook.notebookName).then(d => {
       if (d.status != 'running') {
         context.snackbar('warning', '컨테이너가 준비되지 않았습니다. 다시 시작하세요. (30분 이상 방치 자동종료)');
         notebook.status = null;
@@ -256,7 +256,7 @@ const MyPage = (props) => {
     notebook.progress = true;
     updateState();
 
-    Fetch.stopNotebook(user.id, notebook).then(d => {
+    Server.stopNotebook(user.id, notebook).then(d => {
       /* !!!!  WARNING  !!!! 
       When launcing docker contanier on the same network with https protocol, 
       Chrome(ubuntu version-currently figured out) emit ERR_NETWORK_CHANGED Exception.

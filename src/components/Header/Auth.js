@@ -8,6 +8,7 @@ import RegisterForm from '@components/Header/Register';
 import SignInForm from '@components/Header/SignIn';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import GoogleConfig from '@lib/authSecret';
+import Server from '@lib/server';
 
 const styles = {
   appTitle: {
@@ -31,7 +32,7 @@ const Auth = (props) => {
 
   const handleGoogleLoginSuccess = (userProfile) => {
 
-    Fetch.googleLogin(userProfile).then((d) => {
+    Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
         loginUser(d.user);
       }

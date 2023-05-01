@@ -6,7 +6,7 @@ import Text from '@components/typography/Text';
 import config from '@lib/config';
 
 //import { guidesState, postsState } from '@lib/store';
-import Fetch from '../lib/fetch';
+import Server from '../lib/server';
 
 const BLOG_URL = config.BLOG_URL;
 
@@ -86,10 +86,10 @@ const Posts = () => {
 
   useEffect(() => {
     (async function () {
-      //posts = await Fetch.getAllPosts();
-      setPosts(await Fetch.getAllPosts())
+      //posts = await Server.getAllPosts();
+      setPosts(await Server.getAllPosts())
       //console.log(posts);
-      setGiudes(await Fetch.getPostsByTag('사용가이드'));
+      setGiudes(await Server.getPostsByTag('사용가이드'));
       //console.log(guides);
     })();
   }, []);
