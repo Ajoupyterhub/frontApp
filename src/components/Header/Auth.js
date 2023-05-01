@@ -1,4 +1,3 @@
-
 import React, { useContext, useState, useEffect } from 'react';
 import { Typography, Box, IconButton, Popover } from '@mui/material';
 import { Login, HowToReg } from '@mui/icons-material';
@@ -19,7 +18,7 @@ const styles = {
 };
 
 const Auth = (props) => {
-  let {snackbar, loginUser } = useContext(AppContext);
+  let {snackbar, loginUser, dispatchUser, dispatchSnack } = useContext(AppContext);
   let [openRegister, setRegister] = useState(false);
   let [openSignIn, setSignIn] = useState(false);
   let [mode, setMode] = useState('Google');
@@ -50,7 +49,8 @@ const Auth = (props) => {
   const handleLoginSuccess = (data) => {
     if (mode == 'dev') {
       setSignIn(false);
-      loginUser(data);
+      //loginUser(data);
+      dispatchUser({type: "LOGIN", user : data})
     }
   }
 

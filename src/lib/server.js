@@ -2,15 +2,15 @@ import config from './config';
 
 const Server = {
 
-login : function(data) {
-    return fetch("/login", {
+login : async function(data) {
+    return await fetch("/login", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)})
-            .then(d => d.json());
+            .then(d => d.json())
 },
 
 
@@ -48,6 +48,14 @@ logout : function(userEmail, signInMode) {
         }
         return response;
     });
+},
+
+testPromise : async function(a, b) {
+  await fetch(`/user/jyc/notebook/code`).then(d => d.json()).then(() => {
+    return "Hello";
+  }).catch(e => {
+    return e;
+  })
 },
 
 statusNotebook : function(userID, kind) {
@@ -253,8 +261,6 @@ export function getAllPosts(page = 0) {
     })(url);
   }
 };
-
-
 
 export default Server;
 
