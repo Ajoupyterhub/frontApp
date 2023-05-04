@@ -126,7 +126,7 @@ const GroupList = (props) => {
   }
 
   useEffect(() => {
-    let userID = (context.currentUser) ? context.currentUser.email.split('@')[0] : '';
+    let userID = (context.user) ? context.user.email.split('@')[0] : '';
     setState({ ...state, userID });
     //console.log(userID);
     Server.getGroupListByUserID(userID)
@@ -159,9 +159,9 @@ const GroupList = (props) => {
       const data = {
         //groupID : d.groupID,
         name: `${d.courseName}`,
-        owner: d.owner || context.currentUser.id,
-        ownerEmail: d.ownerEmail || context.currentUser.email, /// 조교가 수정할 경우도 고려해야 함. Backend에서 고려하고 있음.
-        ownerName: context.currentUser.name,
+        owner: d.owner || context.user.id,
+        ownerEmail: d.ownerEmail || context.user.email, /// 조교가 수정할 경우도 고려해야 함. Backend에서 고려하고 있음.
+        ownerName: context.user.name,
         semester: d.semester,
         classSchedule: d.classSchedule,
         notebookKind: d.notebookKind,

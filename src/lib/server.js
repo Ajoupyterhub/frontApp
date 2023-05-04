@@ -1,5 +1,23 @@
 import config from './config';
 
+function asyncFetchWrapper (callback, url, option) {
+
+
+  fetch(url, option).then(r => r.json()).then(json => {console.log(json); return callback(json)});
+
+  // let rv =  (function(url, option) {
+  //   let data;
+  //   let v = fetch(url, option)
+  //   v = v.then(d => d.json()); //.then(r => { data = r;     console.log(r); return;});
+  //   console.log(v);
+  //   return data;
+  // }
+  // )(url, option);
+  // //console.log(rv);
+  // return rv;
+}
+
+
 const Server = {
 
 login : async function(data) {
@@ -13,6 +31,23 @@ login : async function(data) {
             .then(d => d.json())
 },
 
+
+// login : function(data) {
+//   const url = "/login";
+//   const options = {
+//     method: "POST",
+//     headers: {
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(data)}
+//     return (async function (url, options) {
+//       let data = await fetch(url, options).then(r =>  r.json()).then(r => { return r;});
+//       return data; 
+//     })(url, options);
+//     //console.log(rv);
+//     //return rv;
+// },
 
 googleLogin : function (user) {
     return fetch("/login", {

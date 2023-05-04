@@ -25,6 +25,7 @@ const styles = {
     padding: '8px', // theme.spacing.unit,
     width: '100%',
     height: `calc(100vh - 20px)`,
+    justifyContent : 'center',
     overflow: 'auto',
   },
 
@@ -72,7 +73,8 @@ const stylesContainer = {
   card: {
     backgroundColor: '#FEFEFE',
     height: 175,
-    maxWidth: 350,
+    //maxWidth: 380,
+    minWidth: 250,
   },
   actingCard: {
     borderRadius: '5px',
@@ -203,7 +205,6 @@ const MyPage = (props) => {
         }
         else {
           notebook.status = "running"; //If no websocket
-          console.log(d.passcode);
           notebook.passcode = d.passcode;
         }
       }).catch((e) => {
@@ -313,7 +314,8 @@ const MyPage = (props) => {
           container
           direction="row"
           spacing={3}
-        //alignItems="center"
+          alignItems="center"
+          justifyContent="center"
         >
           {state.notebooks.map((row) => (
             <Grid item xs={4} key={`${userId}-${row.notebookName}`} >

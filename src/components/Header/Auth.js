@@ -19,13 +19,12 @@ const styles = {
 
 const Auth = (props) => {
   let {snackbar, loginUser, dispatchUser, dispatchSnack } = useContext(AppContext);
-  let [openRegister, setRegister] = useState(false);
-  let [openSignIn, setSignIn] = useState(false);
+  let [openRegister, setOpenRegister] = useState(false);
+  let [openSignIn, setOpenSignIn] = useState(false);
   let [mode, setMode] = useState('Google');
 
   useEffect(() => {
     let pathname = window.location.pathname;
-    console.log('SignInForm', pathname);
     setMode((pathname.startsWith('/dev')) ? 'dev' : 'Google');
   }, []);
 
@@ -48,9 +47,9 @@ const Auth = (props) => {
 
   const handleLoginSuccess = (data) => {
     if (mode == 'dev') {
-      setSignIn(false);
-      //loginUser(data);
-      dispatchUser({type: "LOGIN", user : data})
+      setOpenSignIn(false);
+      loginUser(data);
+      //dispatchUser({type: "LOGIN", user : {...data}})
     }
   }
 
@@ -62,19 +61,19 @@ const Auth = (props) => {
           <GoogleSignInBtn icon={<Login id="btn_signin" />}
             onSuccess={handleGoogleLoginSuccess} />
           :
-          <IconButton onClick={() => { setSignIn(true) }}>
+          <IconButton onClick={() => { setOpenSignIn(true) }}>
             <Login id="btn_signin" />
           </IconButton>
         }
         <Box sx={{ width: '10px', height: '100%' }}></Box>
         <Typography variant="h6" color="primary"> 가입 </Typography>
-        <IconButton onClick={() => { setRegister(true) }}>
+        <IconButton onClick={() => { setOpenRegister(true) }}>
           <HowToReg id="btn_register" />
         </IconButton>
       </Box>
       <Popover  /* Popover for RegisterForm */
         open={openRegister}
-        onClose={() => setRegister(false)}
+        onClose={() => setOpenRegister(false)}
         anchorEl={document.getElementById("__header__")}
         anchorOrigin={{
           vertical: 'bottom',
@@ -89,7 +88,7 @@ const Auth = (props) => {
       </Popover>
       <Popover  /* Popover for id/password SignInForm */
         open={openSignIn}
-        onClose={() => setSignIn(false)}
+        onClose={() => setOpenSignIn(false)}
         anchorEl={document.getElementById("__header__")}
         anchorOrigin={{
           vertical: 'bottom',

@@ -32,7 +32,7 @@ const styles = {
   };
   
 const Header = (props) => {
-    let {currentUser} = useContext(AppContext);
+    let {user} = useContext(AppContext);
 
     return (
       <AppBar sx={styles.top} id = "__header__">
@@ -44,7 +44,7 @@ const Header = (props) => {
               AjoupyterHub - 아주대학교 코딩 놀이 공간
             </Typography> 
           </Box>  
-          { (currentUser) ? <Profile /> : <Auth /> }
+          { (user) ? <Profile /> : <Auth /> }
         </Toolbar>
       </AppBar>
     );

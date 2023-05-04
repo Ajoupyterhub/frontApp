@@ -121,7 +121,7 @@ const SignInForm = (props) => {
   */
   
  
-  const handleSignInBtn = async (e) => {
+  const handleSignInBtn = (e) => {
     e.preventDefault();
     
     const data = {
@@ -132,19 +132,15 @@ const SignInForm = (props) => {
 
     Server.login(data).then((d) => {
       if(d.msg === "OK") {
-        //context.snackbar("success", "Welcome to Ajoupyterhub");
-        context.dispatchSnack({
-          type : "OPEN_SNACKBAR", 
-          variant : "success", 
-          message : "Welcome to Ajoupyterhub"})
+        context.snackbar("success", "Welcome to Ajoupyterhub")
+        // console.log(d.user)
         props.onUserSignIn(d.user);
-        console.log(d);
       }
       else {
         context.snackbar("error", d.msg);
       }
     });
-   }
+  }
 
   return (
     <React.Fragment>

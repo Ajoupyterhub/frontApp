@@ -6,7 +6,7 @@ import { AppContext } from '@lib/app-context';
 import Server from '@lib/server';
 
 const Profile = (props) => {
-    const {currentUser, logoutUser, snackbar} = useContext(AppContext)
+    const {user, logoutUser, snackbar} = useContext(AppContext)
 
     let [bShowProfile, setbShowProfile] = useState(false);
 
@@ -28,19 +28,19 @@ const Profile = (props) => {
       <>
         <Box sx={{justifyContent : 'flex-end',  alignItems : 'center',}} >
           <Typography color="primary" display="inline"  align="center"  >
-            {currentUser.name}
+            {user.name}
           </Typography>
           <IconButton aria-label="whoami" 
             color="primary" 
             onClick={() => {setbShowProfile(true)}}>
-              {currentUser != null && <Avatar src={currentUser.picture || currentUser.imageUrl} />}       
+              {user != null && <Avatar src={user.picture || user.imageUrl} />}       
           </IconButton>
           <IconButton aria-label="Exit" onClick={onExit} 
             color="primary"  >
             <PowerSettingsNew id="button_exit"/>              
           </IconButton>
         </Box> 
-        <MyProfile  user = {currentUser} 
+        <MyProfile  user = {user} 
           open={bShowProfile}  
           onClose={() => {setbShowProfile(false)}}
           anchor={document.getElementById("button_exit")}/>
