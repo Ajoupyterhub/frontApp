@@ -85,24 +85,16 @@ logout : function(userEmail, signInMode) {
     });
 },
 
-testPromise : async function(a, b) {
-  await fetch(`/user/jyc/notebook/code`).then(d => d.json()).then(() => {
-    return "Hello";
-  }).catch(e => {
-    return e;
-  })
-},
-
-statusNotebook : function(userID, kind) {
+statusContainer : function(userID, kind) {
     const url = `/user/${userID}/notebook/${kind}`
     return fetch(url).then(d => d.json()).catch(e => {
-        console.log(`Error in Fetch.statusNotebook: ${e}`);
+        console.log(`Error in Fetch.statusContainer: ${e}`);
     });
 },
 
-startNotebook : function(userID, notebook) {
+startContainer : function(userID, kind) {
     const url = `/user/${userID}/notebook`;
-    const body  = { action: "start", notebookKind : notebook.notebookName};
+    const body  = { action: "start", kind : kind};
     return fetch(url, {
         method: "POST",
         headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -110,8 +102,8 @@ startNotebook : function(userID, notebook) {
       }).then((d) => d.json());
 },
 
-stopNotebook : function (userID, notebook) {
-    const body  = { action: "stop",  notebookKind : notebook.notebookName };
+stopContainer : function (userID, kind) {
+    const body  = { action: "stop",  kind : kind };
     return fetch(`/user/${userID}/notebook`, {
         method: "POST",
         headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -119,7 +111,7 @@ stopNotebook : function (userID, notebook) {
       }).then((d)=> d.json());
 },
 
-getNotebooks : function(userID) {
+getContainers : function(userID) {
     return fetch(`/user/${userID}`).then(d => d.json());
 },
 

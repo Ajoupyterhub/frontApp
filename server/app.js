@@ -12,6 +12,17 @@ app.use(express.urlencoded({'extended' : true}));
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/public'));   // html, image 등 정적파일 제공 폴더 지정
 
+var containers = {
+  'wetty' : {
+    status : null,
+  },
+  'tensorflow' : {
+    status : null,
+  },
+  'datascience' : {
+    status : null,
+  }
+};
 
 app.get('/', (req, res) => {
   res.sendFile('index.html', {root : __dirname + '/public'})
@@ -77,15 +88,18 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/user/:userID/notebook/:kind', (req, res) => {
-  res.json({status : 'running'})
+  res.json(containers[req.params.kind] /*{status : 'running', passcode : '12345678'}*/);
 })
 
 app.post('/user/:userID/notebook', (req, res) => {
   let data = req.body; //.json();
+  console.log(data);
   if (data.action == 'start') {
-    res.json({status : "OK", passcode : '12345678' })
+    containers[data.kind].status = 'running';
+    res.json({status : "running", passcode : '12345678' }) // was status : 'OK'
   } else {
-    res.json({status : 'OK'})
+    containers[data.kind].status = null;
+    res.json({status : null})   // was status : 'OK'
   }
 })
 
