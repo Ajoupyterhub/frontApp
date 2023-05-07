@@ -10,10 +10,7 @@ import config from '@lib/config';
 const styles = {
   root: {
     margin: 3, //theme.spacing(3),
-    //height : "100%", //`calc(100vh - $margin)`,
-    //maxHeight: "100vh", //`calc(100vh - ${theme.spacing(1)}) px`, // doesn't work
-    //width: 500,
-    //overflow : 'auto',
+    padding: 1,
   },
 };
 
@@ -51,7 +48,7 @@ const marks = [
 
 const GroupPage = (props) => {
   let [state, setState] = useState({
-    notebookKind: "jupyter/datascience-notebook",
+    kind: "jupyter/datascience-notebook",
     classSchedule: '',
     courseID: '',
     courseName: '',
@@ -68,7 +65,7 @@ const GroupPage = (props) => {
       setState({expiryDate : date});
       return;
     } */
-    if (name == 'notebookKind') {
+    if (name == 'kind') {
       setState({ ...state, [name]: event.target.value })
     }
     if (name == 'memoryLimit') {
@@ -94,7 +91,7 @@ const GroupPage = (props) => {
       courseName: formdata.get('courseName'),
       courseID: formdata.get('courseID'),
       dept: formdata.get('dept'),
-      notebookKind: formdata.get('notebookKind'),
+      kind: formdata.get('kind'),
       memoryLimit: state.memoryLimit,
     }
 
@@ -113,7 +110,7 @@ const GroupPage = (props) => {
           <DialogContentText>
             {props.titleText}
           </DialogContentText>
-          <form /* className={classes.form}*/ onSubmit={handleUpdateGroupBtn}> {/* action="/account" method="POST"> */}
+          <form style={{padding: '8px'}} /* className={classes.form}*/ onSubmit={handleUpdateGroupBtn}> {/* action="/account" method="POST"> */}
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="courseName">교과목 이름 </InputLabel>
               <Input id="courseName" name="courseName" defaultValue={(group && group.name)} />
@@ -136,10 +133,10 @@ const GroupPage = (props) => {
 
             {/*
             <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="notebookKind">주피터 노트북</InputLabel>
-              <Select defaultValue={state.notebookKind}
-                onChange={handleChange('notebookKind')}
-                inputProps={{ name: 'notebookKind', id: 'notebookKind' }} >
+              <InputLabel htmlFor="kind">주피터 노트북</InputLabel>
+              <Select defaultValue={state.kind}
+                onChange={handleChange('kind')}
+                inputProps={{ name: 'kind', id: 'kind' }} >
                 {config.notebook_list.map((n) => { return <MenuItem value={n}> {n}</MenuItem> })}
               </Select>
             </FormControl>
@@ -168,11 +165,11 @@ const GroupPage = (props) => {
               fullWidth
               variant="contained"
               color="primary"
-              sx={{padding: 1}}
+              sx={{marginTop: 2}}
               /* className={classes.submit} */
             //onClick={handleUpdateGroupBtn} // Must remove to get FormData. FormData uses Form submit
             >
-              {props.group && ("그룹 정보 수정" || "그룹 만들기")}
+              { (props.group) ?  "그룹 정보 수정" : "그룹 만들기"}
             </Button>
             {/*
             <Typography className={classes.submit} fullwidth centered> 

@@ -16,6 +16,7 @@ const styles = {
   tabs: {
     height: `calc(100vh - 20px)`,
     border: '1px solid lightgray',
+    backgroundColor: '#EFEFEF',
     width: 48,
   },
 
@@ -51,9 +52,6 @@ const MyPage = (props) => {
   let {user} = useContext(AppContext);
 
   const handleTabChange = (e, newTab) => {
-    /*
-      Synchronize Notebook server's status in K8S with Frontend's notebook status
-    */
       setCurrentTab(newTab);
   }
 

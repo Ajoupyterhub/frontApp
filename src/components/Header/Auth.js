@@ -49,7 +49,6 @@ const Auth = (props) => {
     if (mode == 'dev') {
       setOpenSignIn(false);
       loginUser(data);
-      //dispatchUser({type: "LOGIN", user : {...data}})
     }
   }
 
@@ -103,7 +102,6 @@ const Auth = (props) => {
       </Popover>
     </GoogleOAuthProvider>
   )
-
 }
 
 export default Auth;

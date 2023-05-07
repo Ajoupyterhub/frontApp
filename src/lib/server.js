@@ -1,176 +1,173 @@
 import config from './config';
 
-function asyncFetchWrapper (callback, url, option) {
-
-
-  fetch(url, option).then(r => r.json()).then(json => {console.log(json); return callback(json)});
-
-  // let rv =  (function(url, option) {
-  //   let data;
-  //   let v = fetch(url, option)
-  //   v = v.then(d => d.json()); //.then(r => { data = r;     console.log(r); return;});
-  //   console.log(v);
-  //   return data;
-  // }
-  // )(url, option);
-  // //console.log(rv);
-  // return rv;
+function  asyncFetch(url, options={method : "GET"}, callback = null) {
+  return (( async function (url, options, callback){
+    let data;
+    await fetch(url, options).then(r => r.json()).then(json => {
+      data = (callback) ? callback(json) : json;
+      //data = callback(json); 
+      console.log("In AsyncFetch: ", data)
+      return;
+    });
+    return data;
+  })(url, options, callback));
 }
-
 
 const Server = {
 
-login : async function(data) {
+  testAsync : function () { // 호출하는 부분에서, await로 call 해야 함. ==> 의미 없음
+    return asyncFetch('/user/jyc/notebook/wetty', 
+      {method: "GET",
+      })
+  },
+
+  login: async function (data) {
     return await fetch("/login", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)})
-            .then(d => d.json())
-},
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(d => d.json())
+  },
 
 
-// login : function(data) {
-//   const url = "/login";
-//   const options = {
-//     method: "POST",
-//     headers: {
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(data)}
-//     return (async function (url, options) {
-//       let data = await fetch(url, options).then(r =>  r.json()).then(r => { return r;});
-//       return data; 
-//     })(url, options);
-//     //console.log(rv);
-//     //return rv;
-// },
+  // login : function(data) {
+  //   const url = "/login";
+  //   const options = {
+  //     method: "POST",
+  //     headers: {
+  //         'Accept': 'application/json',
+  //         'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(data)}
+  //     return (async function (url, options) {
+  //       let data = await fetch(url, options).then(r =>  r.json()).then(r => { return r;});
+  //       return data; 
+  //     })(url, options);
+  //     //console.log(rv);
+  //     //return rv;
+  // },
 
-googleLogin : function (user) {
+  googleLogin: function (user) {
     return fetch("/login", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({'loginType' : 'Google', 'email' : user.email})})
-    .then(d => d.json());
-        
-    /*
-    return fetch("/oauth/google__/authorize", {mode : 'no-cors'}).then(d => d.text)
-    .catch(e=>{
-        console.log(e);
-    });*/    
-},
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 'loginType': 'Google', 'email': user.email })
+    })
+      .then(d => d.json());
+  },
 
-logout : function(userEmail, signInMode) {
-    let response = {level : 'success', msg : 'OK'};
+  logout: function (userEmail, signInMode) {
+    let response = { level: 'success', msg: 'OK' };
 
-    if(signInMode == 'Google') {
-        if(googleSignOut(userEmail) == false) {
-          response = {level : 'warning', msg :'Google Signout Error'};
-        }
+    if (signInMode == 'Google') {
+      if (googleSignOut(userEmail) == false) {
+        response = { level: 'warning', msg: 'Google Signout Error' };
+      }
     }
 
     return fetch('/logout').then(d => d.json())
-    .then(d => {
+      .then(d => {
         if (d.msg != 'OK') {
-            response.level = 'error';
-            response.msg = d.msg;
+          response.level = 'error';
+          response.msg = d.msg;
         }
         return response;
-    });
-},
+      });
+  },
 
-statusContainer : function(userID, kind) {
+  statusContainer: function (userID, kind) {
     const url = `/user/${userID}/notebook/${kind}`
     return fetch(url).then(d => d.json()).catch(e => {
-        console.log(`Error in Fetch.statusContainer: ${e}`);
+      console.log(`Error in Fetch.statusContainer: ${e}`);
     });
-},
+  },
 
-startContainer : function(userID, kind) {
+  startContainer: function (userID, kind) {
     const url = `/user/${userID}/notebook`;
-    const body  = { action: "start", kind : kind};
+    const body = { action: "start", kind: kind };
     return fetch(url, {
-        method: "POST",
-        headers: { "Accept": "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }).then((d) => d.json());
-},
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((d) => d.json());
+  },
 
-stopContainer : function (userID, kind) {
-    const body  = { action: "stop",  kind : kind };
+  stopContainer: function (userID, kind) {
+    const body = { action: "stop", kind: kind };
     return fetch(`/user/${userID}/notebook`, {
-        method: "POST",
-        headers: { "Accept": "application/json", "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      }).then((d)=> d.json());
-},
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then((d) => d.json());
+  },
 
-getContainers : function(userID) {
+  getContainers: function (userID) {
     return fetch(`/user/${userID}`).then(d => d.json());
-},
+  },
 
-registerUser : function(data) {
+  registerUser: function (data) {
     return fetch('/user', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify(data),
-      }).then((response) => response.json())
-},
+      method: 'POST',
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify(data),
+    }).then((response) => response.json())
+  },
 
-forgotPassword : function(data) {
+  forgotPassword: function (data) {
     return fetch('/account/forgotPassword', {
-        method: 'POST',
-        headers: { "Content-Type": "application/json", },
-        body: JSON.stringify(data),
-      }).then((response) => response.json());
-},
+      method: 'POST',
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify(data),
+    }).then((response) => response.json());
+  },
 
-newPassword : function(data) {
+  newPassword: function (data) {
 
     return fetch("/account/newPassword", {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      }).then(d => d.json());
-},
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(d => d.json());
+  },
 
-addMembers : function(groupID, data) {
-
-    return fetch(`/group/${groupID}/members`, {
-        method : "POST",
-        headers : {"Content-Type" : "application/json",},
-        body : JSON.stringify(data),
-      }).then(resp => resp.json())
-},
-
-deleteMembers : function(groupID, members) {
+  addMembers: function (groupID, data) {
 
     return fetch(`/group/${groupID}/members`, {
-        method : "DELETE",
-        headers : {"Content-Type" : "application/json",},
-        body : JSON.stringify(members),
-      }).then(resp => resp.json())
-},
+      method: "POST",
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify(data),
+    }).then(resp => resp.json())
+  },
 
-changeRole : function(groupID, member, role) {
+  deleteMembers: function (groupID, members) {
+
     return fetch(`/group/${groupID}/members`, {
-        method : 'PUT',
-        headers : {"Content-Type" : "application/json",},
-        body : JSON.stringify({'user' : member, 'role' : role}),
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify(members),
+    }).then(resp => resp.json())
+  },
+
+  changeRole: function (groupID, member, role) {
+    return fetch(`/group/${groupID}/members`, {
+      method: 'PUT',
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify({ 'user': member, 'role': role }),
     }).then(res => res.json());
-},
+  },
 
-updateUserProfile : function(userID, data) {
-    
+  updateUserProfile: function (userID, data) {
+
     return fetch("/user/" + userID, {
       method: "PUT",
       headers: {
@@ -178,83 +175,83 @@ updateUserProfile : function(userID, data) {
       },
       body: JSON.stringify(data)
     }).then((response) => response.json());
-},
+  },
 
-addGroup : function(data) {
+  addGroup: function (data) {
     return fetch("/group", {
-        method : "POST",
-        headers: {
-            "Content-Type" : "application/json",
-        },
-        body: JSON.stringify(data)
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
     }).then((response) => response.json());
-},
+  },
 
-updateGroup : function(groupID, data) {
+  updateGroup: function (groupID, data) {
     return fetch(`/group/${groupID}`, {
-        method : "PUT",
-        headers: {
-            "Content-Type" : "application/json",
-        },
-        body: JSON.stringify(data)
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data)
     }).then((response) => response.json());
-},
+  },
 
-getGroupListByUserID : function(userID) {
+  getGroupListByUserID: function (userID) {
 
     return fetch(`/user/${userID}/groups`).then((res) => res.json());
-},
+  },
 
-getMembersByGroupID : function(groupID) {
+  getMembersByGroupID: function (groupID) {
     return fetch(`/group/${groupID}/members`).then((res) => res.json());
-},
+  },
 
-getNotice : function () {
+  getNotice: function () {
     return fetch('/notice').then(d => d.json());
-},
+  },
 
-/**
- * * 블로그 포스트 API
- * 1. 블로그 전체 글 API
- * 2. 블로그 태그 글 API
- */
-/**
- * @iMUngHee
- * @description 블로그 전체 글 API
- * @method GET
- * @param {number} page
- * @returns {object}
- */
-/*
-export function getAllPosts(page = 0) {
-    return http.get(
-      page === 0
-        ? `${BLOG_URL}/page-data/index/page-data.json`
-        : `${BLOG_URL}/page-data/pages/${page + 1}/page-data.json`,
-    );
-  }
-  */
+  /**
+   * * 블로그 포스트 API
+   * 1. 블로그 전체 글 API
+   * 2. 블로그 태그 글 API
+   */
+  /**
+   * @iMUngHee
+   * @description 블로그 전체 글 API
+   * @method GET
+   * @param {number} page
+   * @returns {object}
+   */
+  /*
+  export function getAllPosts(page = 0) {
+      return http.get(
+        page === 0
+          ? `${BLOG_URL}/page-data/index/page-data.json`
+          : `${BLOG_URL}/page-data/pages/${page + 1}/page-data.json`,
+      );
+    }
+    */
 
-  getAllPosts : function (page = 0) {
+  getAllPosts: function (page = 0) {
     const BLOG_URL = config.BLOG_URL
     const url = (page === 0)
-    ? `${BLOG_URL}/page-data/index/page-data.json`
-    : `${BLOG_URL}/page-data/pages/${page + 1}/page-data.json`
+      ? `${BLOG_URL}/page-data/index/page-data.json`
+      : `${BLOG_URL}/page-data/pages/${page + 1}/page-data.json`
 
-    return (async function(url) {
-        let data;
-        await fetch(url).then(r => r.json()).then(r => {data = r.result.data;});
+    return (async function (url) {
+      let data;
+      await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
-        return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-          let date = frontmatter.slug.match(/\d*$/)[0].split('');
-          if (date.length === 0) date = '0'.repeat(6).split('');
-          return {
-            title: frontmatter.title,
-            slug: frontmatter.slug,
-            date: `${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
-          };
-        });
-      })(url);
+      return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
+        let date = frontmatter.slug.match(/\d*$/)[0].split('');
+        if (date.length === 0) date = '0'.repeat(6).split('');
+        return {
+          title: frontmatter.title,
+          slug: frontmatter.slug,
+          date: `${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
+        };
+      });
+    })(url);
   },
   /**
    * @iMUngHee
@@ -286,6 +283,18 @@ export function getAllPosts(page = 0) {
         };
       });
     })(url);
+  },
+
+  getAccessLog: function (userID) {
+    return fetch(`/user/${userID}/access-log`).then(r => r.json());
+  },
+
+  getUsage: function (userID) {
+    return fetch(`/user/${userID}/usage-statistics`).then(r => r.json());
+  },
+
+  getAllUsage: function () {
+    return fetch('/stat/all-usage-stat').then(r => r.json());
   }
 };
 

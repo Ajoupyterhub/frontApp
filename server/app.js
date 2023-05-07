@@ -13,7 +13,7 @@ app.use(logger('dev'));
 app.use(express.static(__dirname + '/public'));   // html, image 등 정적파일 제공 폴더 지정
 
 var containers = {
-  'wetty' : {
+  'code' : {
     status : null,
   },
   'tensorflow' : {
@@ -42,7 +42,18 @@ app.post('/login', (req, res) => {
         email: "jyc@jclab.org", 
         status : "OK", 
         primary_role : "O",
-        imageUrl : "https://lh3.googleusercontent.com/a-/AOh14GjZgcI_rLJUYPRn3pigCRzEths4_KAfl08-DfgYag=s96-c"
+        imageUrl : "https://lh3.googleusercontent.com/a-/AOh14GjZgcI_rLJUYPRn3pigCRzEths4_KAfl08-DfgYag=s96-c",
+        accessLogs : [
+          {datetime : "2023-05-07T14:23:00", container : 'code'},
+          {datetime : "2023-04-30T17:37:00", container : 'datascience'},
+          {datetime : "2023-04-23T19:17:00", container : 'code'},
+        ],
+        usageStat : [
+          ["Container", "Number of Runs"],
+          ["code",  12],
+          ["datascience", 16],
+          ["tensorflow", 7],
+        ],
     }
   })
 });
@@ -88,6 +99,7 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/user/:userID/notebook/:kind', (req, res) => {
+  console.log(containers[req.params.kind]);
   res.json(containers[req.params.kind] /*{status : 'running', passcode : '12345678'}*/);
 })
 
@@ -96,10 +108,10 @@ app.post('/user/:userID/notebook', (req, res) => {
   console.log(data);
   if (data.action == 'start') {
     containers[data.kind].status = 'running';
-    res.json({status : "running", passcode : '12345678' }) // was status : 'OK'
+    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) // was status : 'OK'
   } else {
     containers[data.kind].status = null;
-    res.json({status : null})   // was status : 'OK'
+    res.json({status : "OK"})   // was status : 'OK'
   }
 })
 
@@ -107,19 +119,19 @@ app.get('/user/:userID', (req, res) => {
   res.json([
     {   status: null,
         description: "For Python & R",
-        notebookName: "datascience", 
+        kind: "datascience", 
         displayName: "Datascience Notebook", }, 
 
      {  status: null,
         description: "For Deep Learning (Coming Soon ... )",
-        notebookName: "tensorflow", 
+        kind: "tensorflow", 
         displayName: "Tensorflow Notebook",
       }, 
 
      {  status: null,
-        description: "Web Terminal",
-        notebookName: "wetty", 
-        displayName: "Web TTY Terminal", 
+        description: "VS Code",
+        kind: "code", 
+        displayName: "Visual Studio Code", 
       }, 
     ])
 })
@@ -138,7 +150,7 @@ app.get('/user/:userID/groups', (req, res) => {
       name : "빅데이터개론",
       owner : "jyc",
       ownerName : '훈남',
-      notebookKind : "jupyter/minimal-notebook",
+      kind : "jupyter/minimal-notebook",
       role : "admin",
     },
     {
@@ -146,7 +158,7 @@ app.get('/user/:userID/groups', (req, res) => {
       name : "인공지능 프로그래밍 기초",
       owner : "jyc",
       ownerName : '쟁쟁한',
-      notebookKind : "jupyter/minimal-notebook",
+      kind : "jupyter/minimal-notebook",
       role: "user",
     }]
   )
@@ -193,6 +205,38 @@ app.delete('/group/:groupID/members', (req, res) => {
 
 app.put('/group/:groupID/members', (req, res) => {
   res.json({roleChangeFailed : [ 'a', 'b' ]})
+})
+
+app.get('/user/:userID/access-log', (req, res) => {
+  res.json({
+    logs : [
+      {datetime : "2023-05-07T14:23:00", container : 'code'},
+      {datetime : "2023-04-30T17:37:00", container : 'datascience'},
+      {datetime : "2023-04-23T19:17:00", container : 'code'},
+    ]
+  })
+})
+
+app.get('/user/:userID/usage-statistics', (req, res) => {
+  res.json({
+    usage : [
+      ["Container", "Number of Runs"],
+      ["code",  12],
+      ["datascience", 16],
+      ["tensorflow", 7],
+    ]
+  })
+})
+
+app.get('/stat/all-usage-stat', (req, res) => {
+  res.json(
+    [
+      ["Container", "Number of Runs"],
+      ["code", 45],
+      ['datascience', 39],
+      ["tensorflow", 17]
+    ]
+  )
 })
 
 app.get('/notice', (req, res) => {

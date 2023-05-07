@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Grid, Box } from '@mui/material';
 import { AppContext } from '@lib/app-context';
-import ConfirmDialog from '@components/ConfirmDialog';
+import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
 import Server from '@lib/server';
+import TechPosts from '../TechPosts';
 
 
 const styles = {
   containerPaper: {
+    display : 'flex',
+    flexDirection : 'row',
     padding: '8px', // theme.spacing.unit,
     width: '100%',
     height: `calc(100vh - 20px)`,
-    justifyContent: 'center',
+    //justifyContent: 'center',
     overflow: 'auto',
   },
 };
@@ -20,12 +23,9 @@ const styles = {
 const Containers = (props) => {
   let context = useContext(AppContext);
   const { user } = context; //props;
-  const userId = user.id;
 
   let [containerList, setContainerList] = useState([]);
   let [runnings, setRunnings] = useState([]);
-  let [openConfirmationStop, setConfirmationStop] = useState(false);
-  let resolveRef = useRef(() => {});
 
   useEffect(() => {
     Server.getContainers(user.id).then(d => {
@@ -33,41 +33,38 @@ const Containers = (props) => {
     });
   }, [user])
 
-  const getConfirm = () => {
-    return new Promise((resolve, reject) => {
-      setConfirmationStop(true);
-      resolveRef.current = resolve;
-    })
-  }
-
-  const handleConfirmationStop = (boolStop) => (e) => {
-    resolveRef.current(boolStop);
-    setConfirmationStop(false);
-  }
-
   return (
     <div style={styles.containerPaper}>
-      <Box sx={{ width: '100%', height: '200px', backgroundColor: '#4a7ec9' }}></Box>
+      <UsageInfo userID={user.id} />
+      <Grid
+        container
+        direction="column"
+        sx={{width: '100%'}}>
+
       <Grid
         container
         direction="row"
         spacing={3}
-        alignItems="center"
+        //alignItems="center"
         justifyContent="center"
+        sx={{padding: 1}}
       >
         {containerList?.map((con) => (
-          <Grid item xs={4} key={`${userId}-${con.notebookName}`} >
+          <Grid item xs={4} key={`${user.id}-${con.kind}`} >
             <ContainerPlayer container={con} runningContainers={runnings}
               onStartContainer={kind => setRunnings([...runnings, kind])}
-              onStopContainer={kind => setRunnings(runnings.filter(k => k != kind))}
-              getConfirm={getConfirm} />
+              onStopContainer={kind => setRunnings(runnings.filter(k => k != kind))}/>
           </Grid>))
         }
       </Grid>
-      <ConfirmDialog open={openConfirmationStop}
-        handleClose={handleConfirmationStop}
-        title="Do you really want to stop the container?"
-        message={"Press \"OK\" to stop the container."} />
+      <div>
+        <TechPosts />
+      </div>
+      <Box sx={{display : 'flex', flexDirection : 'row', flexGrow : 'stretch', justifyContent : 'center'} }>
+        <img src="/static/images/50th_emblem_ver02.png" style={{ width: '27%', objectFit : 'scale-down'}}/>
+        <img src="/static/images/sw_college_emblem_1.png" style={{objectFit : 'scale-down'}}/>
+      </Box>
+      </Grid>
     </div>
   );
 }

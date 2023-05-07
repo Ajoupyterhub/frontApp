@@ -11,8 +11,8 @@ const style = {
   profileBox: {
     width: 400,
     minHeight: 175,
-    margin: 'spacing(1)', //theme.spacing(1),
-    padding: 'spacing(1)', //theme.spacing(1),
+    margin: 1, //'spacing(1)', //theme.spacing(1),
+    padding: 1, //'spacing(1)', //theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -24,20 +24,20 @@ const style = {
     justifyContent: 'center',
     alignItems: 'center',
     width: 350,
-    margin: 'spacing(1)', //theme.spacing(1),
+    margin: 2, //'spacing(1)', //theme.spacing(1),
   },
 
   usageChart: {
     backgroundColor: 'background.default', //theme.palette.background.default,
     display: 'flex',
     flexGrow: 1,
-    margin: 'spacing(1)', //theme.spacing(1),
+    margin: 1, //'spacing(1)', //theme.spacing(1),
     marginRight: 0,
     height: '100%',
     minHeight: 150,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 'spacing(1)', //theme.spacing(1),
+    padding: 1, //'spacing(1)', //theme.spacing(1),
   },
 
   profSet: {
@@ -45,7 +45,7 @@ const style = {
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    padding: 'spacing(1)', //theme.spacing(1),
+    padding: 1, //'spacing(1)', //theme.spacing(1),
     justifyContent: 'left',
     alignItems: 'left',
     //marginTop: 'auto',

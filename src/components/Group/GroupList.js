@@ -77,7 +77,7 @@ const GroupList = (props) => {
   const groupListColumns = [
     { displayName: "교과목", key: "name" },
     { displayName: "수업시간", key: "classSchedule" },
-    { displayName: "Notebook 종류", key: "notebookKind" },
+    { displayName: "컨테이너 종류", key: "kind" },
     { displayName: "담당교수", key: "ownerName" },
     { displayName: "더보기", key: "menu" },
   ]
@@ -164,7 +164,7 @@ const GroupList = (props) => {
         ownerName: context.user.name,
         semester: d.semester,
         classSchedule: d.classSchedule,
-        notebookKind: d.notebookKind,
+        kind: d.kind,
         dept: d.dept,
         memoryLimit: d.memoryLimit,
       }
@@ -174,7 +174,7 @@ const GroupList = (props) => {
             let grp = groupList.find((g) => g.groupID == d.groupID);
             grp.name = data.name;
             grp.classSchedule = data.classSchedule;
-            grp.notebookKind = data.notebookKind;
+            grp.kind = data.kind;
             grp.dept = data.dept;
             grp.memoryLimit = data.memoryLimit;
             setGroupList(groupList);
@@ -193,7 +193,7 @@ const GroupList = (props) => {
             list.push({
               groupID: res.groupID,
               name: data.name,
-              notebookKind: data.notebookKind,
+              kind: data.kind,
               owner: data.owner,
               dept: data.dept,
               ownerEmail: data.ownerEmail,

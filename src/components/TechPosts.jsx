@@ -24,7 +24,7 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  width: 49%;
+  width: 100%;
   margin: 5px;
   @media screen and (max-width: 768px) {
     width: 90%;
@@ -74,14 +74,12 @@ const PostDate = styled(Text)`
   margin: 8px;
 `;
 
-const Posts = () => {
+const TechPosts = () => {
   let [posts, setPosts] = useState([]);
-  let [guides, setGiudes] = useState([]);
 
   useEffect(() => {
     (async function () {
-      setPosts(await Server.getAllPosts())
-      setGiudes(await Server.getPostsByTag('사용가이드'));
+      setPosts(await Server.getPostsByTag('기술'))
     })();
   }, []);
 
@@ -90,7 +88,7 @@ const Posts = () => {
       <Content>
         <PostHeader>
           <Text fontWeight={600} fontSize={1.125}>
-            공지사항
+            기술 관련 포스트
           </Text>
           <a href={`${BLOG_URL}`} target="ajoupyterhub_blog">
             <Text fontSize={1.125} color="#707070">
@@ -112,34 +110,8 @@ const Posts = () => {
           ))}
         </PostList>
       </Content>
-
-      <Content>
-        <PostHeader>
-          <Text fontWeight={600} fontSize={1.125}>
-            가이드
-          </Text>
-          <a href={`${BLOG_URL}`} target="ajoupyterhub_blog">
-            <Text fontSize={1.125} color="#707070">
-              더보기 &gt;
-            </Text>
-          </a>
-        </PostHeader>
-        <PostList>
-          {guides?.slice(0, 3).map(({ title, slug, date }) => (
-            <Post key={title} href={`${BLOG_URL}/${slug}`} target="ajoupyterhub_blog">
-              <PostContent>
-                <PostTag wordBreak="keep-all">주요</PostTag>
-                <Text lineHeight={1.1} color="#272727">
-                  {title}
-                </Text>
-              </PostContent>
-              <PostDate wordBreak="keep-all">{date}</PostDate>
-            </Post>
-          ))}
-        </PostList>
-      </Content>
     </Container>
   );
 };
 
-export default Posts;
+export default TechPosts;
