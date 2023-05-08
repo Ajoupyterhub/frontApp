@@ -14,8 +14,18 @@ const styles = {
     padding: '8px', // theme.spacing.unit,
     width: '100%',
     height: `calc(100vh - 20px)`,
-    //justifyContent: 'center',
+    justifyContent: 'space-between',
     overflow: 'auto',
+  },
+  techPosts : {
+    padding : 2,
+  },
+  images : {
+    display : 'flex', 
+    flexDirection : 'row', 
+    flexGrow : 'stretch', 
+    justifyContent : 'center',
+    paddingBottom : 7,
   },
 };
 
@@ -39,7 +49,9 @@ const Containers = (props) => {
       <Grid
         container
         direction="column"
-        sx={{width: '100%'}}>
+        justifyContent = "space-between"
+        //spacing={3}
+        sx={{width: '100%', }}>
 
       <Grid
         container
@@ -57,11 +69,11 @@ const Containers = (props) => {
           </Grid>))
         }
       </Grid>
-      <div>
+      <Box sx={styles.techPosts}>
         <TechPosts />
-      </div>
-      <Box sx={{display : 'flex', flexDirection : 'row', flexGrow : 'stretch', justifyContent : 'center'} }>
-        <img src="/static/images/50th_emblem_ver02.png" style={{ width: '27%', objectFit : 'scale-down'}}/>
+      </Box>
+      <Box sx={styles.images}>
+        <img src="/static/images/50th_emblem_ver02.png" style={{ width: '24%', objectFit : 'scale-down'}}/>
         <img src="/static/images/sw_college_emblem_1.png" style={{objectFit : 'scale-down'}}/>
       </Box>
       </Grid>

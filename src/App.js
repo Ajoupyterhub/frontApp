@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { Box, CssBaseline } from '@mui/material';
 import Header from '@components/Header/Header';
@@ -9,7 +9,6 @@ import SnackbarMessage from '@components/SnackbarMessage';
 import ConfirmDialog from '@components/ConfirmDialog';
 
 import { AppContext } from '@lib/app-context';
-import { userReducer, snackReducer, initialSnackState, initialUser } from '@hooks/reducers';
 import Server from '@lib/server';
 
 
@@ -26,8 +25,8 @@ const styles = {
 };
 
 const App = () => {
-  let [snackState, dispatchSnack] = useReducer(snackReducer, initialSnackState);
-  let [userState, dispatchUser] = useReducer(userReducer, initialUser);
+  let [user, setUser] = useState(null);
+  let [snackState, setSnackState] = useState({open : false, variant : 'success', message : ''});
   let [openConfirmationStop, setConfirmationStop] = useState({
     open : false, title : '', message : ''});
 
@@ -53,32 +52,31 @@ const App = () => {
   }
 
   const snackbar = (variant, message) => {
-    dispatchSnack({ type: "OPEN_SNACKBAR", variant, message })
+    setSnackState({open : true, variant, message});
   }
 
   const loginUser = (user) => {
-    //setUser(user);
-    dispatchUser({ type: "LOGIN", user : {...user} })
+    setUser(user);
   }
 
   const logoutUser = () => {
-    dispatchUser({ type: "LOGOUT", user: null });
+    setUser(null);
   }
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway')
       return;
-    dispatchSnack({ type: "CLOSE_SNACKBAR" })
+    setSnackState({...snackState, open : false, message : ''});
   }
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppContext.Provider value={{ snackbar, loginUser, logoutUser, dispatchUser, 
-          user: userState.user, getConfirm : getConfirm, allUsage : usageRef.current }}>
+      <AppContext.Provider value={{ snackbar, loginUser, logoutUser, 
+          user: user, getConfirm : getConfirm, allUsage : usageRef.current }}>
         <Header />
         <Box sx={styles.mainPage}>
-          {(userState.user == null) ? <Home /> : <MyPage user={userState.user} />}
+          {(user == null) ? <Home /> : <MyPage user={user} />}
         </Box>
       </AppContext.Provider>
       <SnackbarMessage

@@ -1,12 +1,9 @@
-import React, {useContext, useState, useReducer} from 'react';
-import {
-  Avatar, Box, Button, FormControl, Input, InputLabel, Checkbox,
+import React, {useContext, useState} from 'react';
+import { Avatar, Box, Button, FormControl, Input, InputLabel, Checkbox,
   Typography,  FormControlLabel} from '@mui/material';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import {AppContext} from '@lib/app-context';
 import Server from '@lib/server';
-//import { userReducer, snackReducer, initialSnackState, initialUser } from '@hooks/reducers';
-import { LoginOutlined } from '@mui/icons-material';
 
 const styles = {
   layout: {
@@ -50,7 +47,7 @@ const styles = {
     margin: 'auto',
   },
   avatar: {
-    margin: 1, //'spacing(1)', //theme.spacing(1),
+    margin: 1, //theme.spacing(1),
     backgroundColor: 'secondary.main', //theme.palette.secondary.main,
   },
   form: {
@@ -73,9 +70,7 @@ const SignInForm = (props) => {
   const { signInMode } = props;
   let [login, setLogin] = useState({email: '', password: '', remember: false, errorMsg: ''});
   let context = useContext(AppContext); 
-  //let [user, userDispatch] = useReducer(userReducer, null);
-  //let [snackState, setSnackState] = useReducer(snackReducer, initialSnackState)
-
+  
   const handleInputChange = (controlName) => (event) => {
     setLogin({...login, [controlName] : event.target.value});
   }
@@ -102,24 +97,6 @@ const SignInForm = (props) => {
     });
   }
   */
-
-  /*
-  const SignIn = async (loginInfo, mode) => {
-    //let context = useContext(AppContext);
-    return await Server.login(loginInfo).then((d) => {
-      if (d.msg === "OK") {
-        //context.snackbar("success", "Welcome to Ajoupyterhub");
-        props.onUserSignIn(d.user);
-        return d.user;
-      }
-      else {
-        //context.snackbar("error", d.msg);
-        return null;
-      }
-    });
-  }
-  */
-  
  
   const handleSignInBtn = (e) => {
     e.preventDefault();
