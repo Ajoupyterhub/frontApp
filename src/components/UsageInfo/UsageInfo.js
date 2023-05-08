@@ -63,15 +63,15 @@ const AccessLog = (props) => {
   let {user} = useContext(AppContext);
 
   const datetimeTotext = (datetime) => {
-    let time = datetime.split('T')[1]
     let date = new Date(datetime);
-    return `${date.getFullYear()}년 ${date.getMonth()}월 ${date.getDate()}일 ${time}    `;
+    let time = `${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`
+    return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${time}`;
   }
 
   return (
     <React.Fragment>
       <Box sx={styles.accessLog}>
-        <Heading variant='h5' color='black' gutterBottom>최근 접속</Heading>
+        <Heading variant='h5' color='black' gutterBottom>최근 사용</Heading>
         {user?.accessLogs.map(l => {
           return (
             <LogItem key={l.datetime}>

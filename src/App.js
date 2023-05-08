@@ -35,7 +35,7 @@ const App = () => {
 
   useEffect(() => {
     Server.getAllUsage().then(d => {
-      usageRef.current = [...d];
+      usageRef.current = [...d.data];
     })
   }, []);
 
