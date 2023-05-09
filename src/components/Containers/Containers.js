@@ -16,6 +16,7 @@ const styles = {
     height: `calc(100vh - 20px)`,
     justifyContent: 'space-between',
     overflow: 'auto',
+    backgroundColor : '#efefef',
   },
   techPosts : {
     padding : 2,
@@ -73,8 +74,8 @@ const Containers = (props) => {
         <TechPosts />
       </Box>
       <Box sx={styles.images}>
-        <img src="/static/images/50th_emblem_ver02.png" style={{ width: '24%', objectFit : 'scale-down'}}/>
-        <img src="/static/images/sw_college_emblem_1.png" style={{objectFit : 'scale-down'}}/>
+        <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit : 'scale-down'}}/>
+        <img src="/static/images/sw_college_emblem.png" style={{objectFit : 'scale-down'}}/>
       </Box>
       </Grid>
     </div>

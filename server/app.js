@@ -229,14 +229,14 @@ app.get('/user/:userID/usage-statistics', (req, res) => {
 })
 
 app.get('/stat/all-usage-stat', (req, res) => {
-  res.json(
+  res.json( { msg : 'OK', data : 
     [
       ["Container", "Number of Runs"],
       ["code", 45],
       ['datascience', 39],
       ["tensorflow", 17]
     ]
-  )
+  })
 })
 
 app.get('/notice', (req, res) => {

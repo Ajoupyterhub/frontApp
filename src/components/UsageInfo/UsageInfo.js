@@ -26,9 +26,12 @@ const styles = {
 
   usage: {
     //width: '69%',
+    display : 'flex',
+    flexDirection : 'column',
     flexGrow : 1,
     backgroundColor: '#e1f5fe',
     padding: 1,
+    justifyContent : 'space-around',
   },
 
   chart : {
@@ -101,6 +104,7 @@ const Usage = (props) => {
   return (
     <React.Fragment>
       <Box sx={styles.usage}>
+        <Box>
         <Heading variant='h5' color='black'> 컨테이너 사용 현황</Heading>
         <Chart 
             chartType="PieChart"
@@ -108,6 +112,8 @@ const Usage = (props) => {
             options={options}
             style = {styles.chart}
             />
+        </Box>
+        <Box>
         <Heading variant='h5' color='black'> 전체 사용자 현황</Heading>
         <Chart 
             chartType="PieChart"
@@ -115,6 +121,7 @@ const Usage = (props) => {
             options={options}
             style = {styles.chart}
             />
+        </Box>
       </Box>
     </React.Fragment>
 
