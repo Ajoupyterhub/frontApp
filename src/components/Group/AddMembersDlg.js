@@ -1,17 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
+import React, {useState} from 'react';
 import { Button,  Chip, TextField, Dialog, DialogActions, DialogContent, 
-  DialogContentText, DialogTitle, CircularProgress, Paper } from '@material-ui/core/';
-//import { makeStyles } from '@material-ui/core/styles';
-import withStyles from '@material-ui/core/styles/withStyles';
-import { green } from '@material-ui/core/colors';
-import Fetch from './fetch';
-import config from './config';
+  DialogContentText, DialogTitle, CircularProgress, Paper } from '@mui/material';
+import { green } from '@mui/material/colors';
+import Server from '@lib/server';
+import config from '@lib/config';
 
-const styles = theme => ({
+const styles = {
   progress: {
-    margin: theme.spacing.unit * 2,
+    margin: 2, //theme.spacing.unit * 2,
     color: green[500],
     position: 'absolute',
     top: '50%',
@@ -19,34 +15,31 @@ const styles = theme => ({
     marginTop: -12,
     marginLeft: -12,
   },
-});
+};
 
-class AddMembersDlg extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      loading : false,
-      bShowWrongID : false,
-      invalidatedEmailList : [],
-      emailAddrInputs : "",
-    }
-  }
+const AddMembersDlg = (props) => {
+  let [state, setState] = useState({
+    loading : false,
+    bShowWrongID : false,
+    invalidatedEmailList : [],
+    emailAddrInputs : "",
+  });
 
   //let emailAddrInputs = "";
   //let emailList = [];
   //let invalidatedEmailList = [];
   
-  handleTextChange = (e) => {
-    this.setState({emailAddrInputs : e.target.value});
+  const handleTextChange = (e) => {
+    setState({...state, emailAddrInputs : e.target.value});
     return;
   }
 
-  addMember = () => {
+  const addMember = () => {
     //let reqData = [];
-    const hostDomain = config.GoogleConfig.hosted_domain;
+    const hostDomain = config.HOST_DOMAIN; //GoogleConfig.hosted_domain;
     let validEmails = [];
     let invalid_emails = [];
-    this.state.emailAddrInputs.replace(/,/g, ' ').split(/[\s+]/)
+    state.emailAddrInputs.replace(/,/g, ' ').split(/[\s+]/)
       .map(e => {
         if (e.length == 0)
           return;
@@ -64,42 +57,42 @@ class AddMembersDlg extends React.Component {
       });
 
     if(validEmails.length == 0) {
-      this.cleanState();
-      this.props.onClose([], invalid_emails);
+      cleanState();
+      props.onClose([], invalid_emails);
       return;
     }
     console.log(invalid_emails);
-    this.setState({loading : true});
-    Fetch.addMembers(this.props.groupID, validEmails).then(data => {
+    setState({...state, loading : true});
+    Server.addMembers(props.groupID, validEmails).then(data => {
       /*
       invalid_emails.push(...(
         validEmails.filter((e) => 
           {return e.length > 0 && -1 == data.validated.findIndex((v) => {return e == v.email})})
         ))
       console.log(invalid_emails); */
-      invalid_emails.push(...data.data.alreadyMembers);
+//      invalid_emails.push(...data.alreadyMembers);
+        console.log(data);
+      invalid_emails.push(...data.validated);
 
-      this.props.onClose(data.data.addedMembers, invalid_emails);
-      this.setState({emailAddrInputs : ''}); //, invalidatedEmailList: invalid_emails});
+      props.onClose(data.validated, invalid_emails);
+      setState({...state, emailAddrInputs : ''}); //, invalidatedEmailList: invalid_emails});
     }).finally(() => {
-      this.setState({loading : false, invalidatedEmailList : invalid_emails});
+      setState({...state, loading : false, invalidatedEmailList : invalid_emails});
     });
   }
 
-  cleanState = () => {
-    this.setState({ 
+  const cleanState = () => {
+    setState({ 
+      ...state, 
       loading : false,
       emailAddrInputs : "",
       invalidatedEmailList : [],
     });
   }
 
-  render () {
-    const {classes} =  this.props;
-
     return (
       <div>
-        <Dialog maxWidth="md" open={this.props.open} onClose={this.props.onClose} aria-labelledby="form-dialog-title">
+        <Dialog maxWidth="md" open={props.open} onClose={props.onClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">그룹 멤버 추가</DialogTitle>
           <DialogContent>
             <DialogContentText>
@@ -117,17 +110,17 @@ class AddMembersDlg extends React.Component {
                 id="name"
                 label="Email Addresses"
                 type="email"
-                value={this.state.emailAddrInputs}
-                onChange={this.handleTextChange}/>            
+                value={state.emailAddrInputs}
+                onChange={handleTextChange}/>            
             </form>
-            {this.state.loading && <CircularProgress  className={classes.progress} />}
+            {state.loading && <CircularProgress  sx={styles.progress} />}
           </DialogContent>
           {/*
           <DialogContent>
-            <Button onClick={this.addMember}> Add Member </Button>
+            <Button onClick={addMember}> Add Member </Button>
           </DialogContent>
           */}
-          { this.state.invalidatedEmailList.length > 0 &&
+          { state.invalidatedEmailList.length > 0 &&
           <DialogContent>
             <DialogContentText>
               다음 email 주소는 이미 등록되어 있거나, 등록할 수 없는 이메일입니다. 다시 확인하여 주시기 바랍니다.
@@ -135,10 +128,10 @@ class AddMembersDlg extends React.Component {
           </DialogContent>
           }
           <DialogActions>
-            <Button onClick={() => {this.cleanState(); this.props.onClose(null, null)}} color="primary">
+            <Button onClick={() => {cleanState(); props.onClose([], [])}} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.addMember} color="primary">
+            <Button onClick={addMember} color="primary">
               Add Members
             </Button>
           </DialogActions>
@@ -146,10 +139,5 @@ class AddMembersDlg extends React.Component {
       </div>
     );
   }
-}
 
-AddMembersDlg.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default withStyles(styles)(AddMembersDlg);
+export default AddMembersDlg;

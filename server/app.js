@@ -12,6 +12,17 @@ app.use(express.urlencoded({'extended' : true}));
 app.use(logger('dev'));
 app.use(express.static(__dirname + '/public'));   // html, image 등 정적파일 제공 폴더 지정
 
+var containers = {
+  'code' : {
+    status : null,
+  },
+  'tensorflow' : {
+    status : null,
+  },
+  'datascience' : {
+    status : null,
+  }
+};
 
 app.get('/', (req, res) => {
   res.sendFile('index.html', {root : __dirname + '/public'})
@@ -31,7 +42,18 @@ app.post('/login', (req, res) => {
         email: "jyc@jclab.org", 
         status : "OK", 
         primary_role : "O",
-        imageUrl : "https://lh3.googleusercontent.com/a-/AOh14GjZgcI_rLJUYPRn3pigCRzEths4_KAfl08-DfgYag=s96-c"
+        imageUrl : "https://lh3.googleusercontent.com/a-/AOh14GjZgcI_rLJUYPRn3pigCRzEths4_KAfl08-DfgYag=s96-c",
+        accessLogs : [
+          {datetime : "2023-05-07T14:23:00", container : 'code'},
+          {datetime : "2023-04-30T17:37:00", container : 'datascience'},
+          {datetime : "2023-04-23T19:17:00", container : 'code'},
+        ],
+        usageStat : [
+          ["Container", "Number of Runs"],
+          ["code",  12],
+          ["datascience", 16],
+          ["tensorflow", 7],
+        ],
     }
   })
 });
@@ -77,15 +99,19 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/user/:userID/notebook/:kind', (req, res) => {
-  res.json({status : 'running'})
+  console.log(containers[req.params.kind]);
+  res.json(containers[req.params.kind] /*{status : 'running', passcode : '12345678'}*/);
 })
 
 app.post('/user/:userID/notebook', (req, res) => {
   let data = req.body; //.json();
+  console.log(data);
   if (data.action == 'start') {
-    res.json({status : "OK", passcode : '12345678' })
+    containers[data.kind].status = 'running';
+    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) // was status : 'OK'
   } else {
-    res.json({status : 'OK'})
+    containers[data.kind].status = null;
+    res.json({status : "OK"})   // was status : 'OK'
   }
 })
 
@@ -93,19 +119,19 @@ app.get('/user/:userID', (req, res) => {
   res.json([
     {   status: null,
         description: "For Python & R",
-        notebookName: "datascience", 
+        kind: "datascience", 
         displayName: "Datascience Notebook", }, 
 
      {  status: null,
         description: "For Deep Learning (Coming Soon ... )",
-        notebookName: "tensorflow", 
+        kind: "tensorflow", 
         displayName: "Tensorflow Notebook",
       }, 
 
      {  status: null,
-        description: "Web Terminal",
-        notebookName: "wetty", 
-        displayName: "Web TTY Terminal", 
+        description: "VS Code",
+        kind: "code", 
+        displayName: "Visual Studio Code", 
       }, 
     ])
 })
@@ -124,7 +150,7 @@ app.get('/user/:userID/groups', (req, res) => {
       name : "빅데이터개론",
       owner : "jyc",
       ownerName : '훈남',
-      notebookKind : "jupyter/minimal-notebook",
+      kind : "jupyter/minimal-notebook",
       role : "admin",
     },
     {
@@ -132,7 +158,7 @@ app.get('/user/:userID/groups', (req, res) => {
       name : "인공지능 프로그래밍 기초",
       owner : "jyc",
       ownerName : '쟁쟁한',
-      notebookKind : "jupyter/minimal-notebook",
+      kind : "jupyter/minimal-notebook",
       role: "user",
     }]
   )
@@ -149,20 +175,20 @@ app.put('/group/:groupID', (req, res) => {
 app.get('/group/:groupID/members', (req, res) => {
   res.json({ "msg" : "OK" , "data" : [
     { id : "jyc", name : "훈남", email : "jyc@jclab.org", dept: "jclab", role: "O", status : "OK"},
-    { id : "a", name : "홍길동",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "A", status : "OK"},
-    { id : "b", name : "모모",email : "jyc@jclab.org", dept: "SW", role: "U", status : "pending"},
-    { id : "c", name : "제니",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},
-    { id : "d", name : "학생1",email : "jyc@jclab.org", dept: "소프트웨어학과C", role: "U", status : "OK"},
-    { id : "e", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e1", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e2", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e3", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e4", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e5", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e6", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e7", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e8", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
-    { id : "e9", name : "학생2",email : "jyc@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "a", name : "홍길동",email : "a@jclab.org", dept: "소프트웨어학과", role: "A", status : "OK"},
+    { id : "b", name : "모모",email : "b@jclab.org", dept: "SW", role: "U", status : "pending"},
+    { id : "c", name : "제니",email : "c@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},
+    { id : "d", name : "학생1",email : "d@jclab.org", dept: "소프트웨어학과C", role: "U", status : "OK"},
+    { id : "e", name : "학생2",email : "e@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e1", name : "학생3",email : "e1@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e2", name : "학생4",email : "e2@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e3", name : "학생5",email : "e3@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e4", name : "학생6",email : "e4@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e5", name : "학생7",email : "e5@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e6", name : "학생8",email : "e6@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e7", name : "학생9",email : "e7@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e8", name : "학생10",email : "e8@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
+    { id : "e9", name : "학생11",email : "e9@jclab.org", dept: "소프트웨어학과", role: "U", status : "OK"},    
   ]})
 })
 
@@ -173,11 +199,44 @@ app.post('/group/:groupID/members', (req, res) => {
 })
 
 app.delete('/group/:groupID/members', (req, res) => {
-  res.json({deleted : req.body.members})
+  console.log(req.body)
+  res.json({deleted : req.body})
 })
 
 app.put('/group/:groupID/members', (req, res) => {
   res.json({roleChangeFailed : [ 'a', 'b' ]})
+})
+
+app.get('/user/:userID/access-log', (req, res) => {
+  res.json({
+    logs : [
+      {datetime : "2023-05-07T14:23:00", container : 'code'},
+      {datetime : "2023-04-30T17:37:00", container : 'datascience'},
+      {datetime : "2023-04-23T19:17:00", container : 'code'},
+    ]
+  })
+})
+
+app.get('/user/:userID/usage-statistics', (req, res) => {
+  res.json({
+    usage : [
+      ["Container", "Number of Runs"],
+      ["code",  12],
+      ["datascience", 16],
+      ["tensorflow", 7],
+    ]
+  })
+})
+
+app.get('/stat/all-usage-stat', (req, res) => {
+  res.json( { msg : 'OK', data : 
+    [
+      ["Container", "Number of Runs"],
+      ["code", 45],
+      ['datascience', 39],
+      ["tensorflow", 17]
+    ]
+  })
 })
 
 app.get('/notice', (req, res) => {

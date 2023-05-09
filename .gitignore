@@ -1,5 +1,5 @@
 node_modules/
-src/authSecret.js
+src/lib/authSecret.js
 src/deprecated_googleAuth.js
 server/node_modules
 server/public/index.html

@@ -2,9 +2,10 @@ import React from 'react';
 
 const context = {
     snackbar : () => {},
-    onProgress : () => {},
     currentUser : null, 
     changeUserInfo: () => {},
+    loginUser: () => {},
+    logoutUser: () => {},
     //changeUserProjectsInfo: () => {},
     //onSnackbarClose : () => {},
     //variant : "error",
