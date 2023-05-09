@@ -4,7 +4,7 @@ import { AppContext } from '@lib/app-context';
 import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
 import Server from '@lib/server';
-import TechPosts from '../TechPosts';
+import Posts from '@components/Posts';
 
 
 const styles = {
@@ -20,7 +20,11 @@ const styles = {
   },
   techPosts : {
     padding : 2,
+    width: '100%',
+//    display : 'flex',
+//    justifyContent : 'start',
   },
+
   images : {
     display : 'flex', 
     flexDirection : 'row', 
@@ -71,7 +75,7 @@ const Containers = (props) => {
         }
       </Grid>
       <Box sx={styles.techPosts}>
-        <TechPosts />
+        <Posts title="기술 관련 게시글" tag="기술" width="100%"/>
       </Box>
       <Box sx={styles.images}>
         <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit : 'scale-down'}}/>
