@@ -41,7 +41,7 @@ const config = {
     HOST_DOMAIN : 'ajou.ac.kr',
     
     // AjouPyterHub 블로그
-    BLOG_URL : 'http://ajoupyterhub.ajousw.kr',
+    BLOG_URL : 'https://ajoupyterhub.github.io/', //'http://ajoupyterhub.ajousw.kr',
 
     // 런타임 타입
     PROD : 'Google',

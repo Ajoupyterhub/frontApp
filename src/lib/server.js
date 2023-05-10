@@ -243,12 +243,13 @@ const Server = {
       await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
       return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-        let date = frontmatter.slug.match(/\d*$/)[0].split('');
-        if (date.length === 0) date = '0'.repeat(6).split('');
+        console.log(frontmatter)
+        let date = frontmatter.date.split('T')[0]; //frontmatter.slug.match(/\d*$/)[0].split('');
+        if (date?.length === 0) date = '0'.repeat(6).split('');
         return {
           title: frontmatter.title,
           slug: frontmatter.slug,
-          date: `${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
+          date: date, //`${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
         };
       });
     })(url);
@@ -274,12 +275,13 @@ const Server = {
       await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
       return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-        let date = frontmatter.slug.match(/\d*$/)[0].split('');
-        if (date.length === 0) date = '0'.repeat(6).split('');
+        //let date = frontmatter.slug.match(/\d*$/)[0].split('');
+        let date = frontmatter.date.split('T')[0]
+        if (date?.length === 0) date = '0'.repeat(6).split('');
         return {
           title: frontmatter.title,
           slug: frontmatter.slug,
-          date: `${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
+          date: date, //`${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
         };
       });
     })(url);

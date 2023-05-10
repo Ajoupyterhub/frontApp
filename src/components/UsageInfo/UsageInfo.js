@@ -67,7 +67,7 @@ const AccessLog = (props) => {
 
   const datetimeTotext = (datetime) => {
     let date = new Date(datetime);
-    let time = `${date.getHours()}시 ${date.getMinutes()}분 ${date.getSeconds()}초`
+    let time = `${date.getHours()}시 ${date.getMinutes()}분`
     return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${time}`;
   }
 
