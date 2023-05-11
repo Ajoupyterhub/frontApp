@@ -21,16 +21,18 @@ const styles = {
   techPosts : {
     padding : 2,
     width: '100%',
-//    display : 'flex',
-//    justifyContent : 'start',
+    display : 'flex',
+    justifyContent : 'space-around',
+    //alignItems : 'center',
   },
 
   images : {
     display : 'flex', 
     flexDirection : 'row', 
-    flexGrow : 'stretch', 
+    //flexGrow : 'stretch', 
     justifyContent : 'center',
-    paddingBottom : 7,
+    alignItems : 'center',
+    marginBottom : 3,
   },
 };
 
@@ -79,7 +81,7 @@ const Containers = (props) => {
       </Box>
       <Box sx={styles.images}>
         <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit : 'scale-down'}}/>
-        <img src="/static/images/sw_college_emblem.png" style={{objectFit : 'scale-down'}}/>
+        <img src="/static/images/sw_college_emblem.png" style={{ height: '100px', objectFit : 'scale-down'}}/>
       </Box>
       </Grid>
     </div>
