@@ -239,6 +239,16 @@ app.get('/stat/all-usage-stat', (req, res) => {
   })
 })
 
+app.post('/user/:userId/send', (req, res) => {
+  /* curl -X POST -H 'Content-type: application/json' 
+     --data '{"text":"Hello, World!"}' 
+     https://hooks.slack.com/services/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 */
+
+  axios.post('https://hooks.slack.com/services/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', 
+    { text : `[${req.params.userId}] ${req.body.text}`}).then(r => console.log(r.data));
+  res.sendStatus(200);
+})
+
 app.get('/notice', (req, res) => {
   res.json([
     {title: "중요 공지 사항", message : "매일 오전 4시에 모든 노트북 서버가 Reset됩니다. Reset 되기 전에 변경사항을 저장해야 합니다."}

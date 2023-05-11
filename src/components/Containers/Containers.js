@@ -5,6 +5,7 @@ import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
 import Server from '@lib/server';
 import Posts from '@components/Posts';
+import HelpMeMessage from '@components/SlackApi/HelpMe';
 
 
 const styles = {
@@ -21,8 +22,8 @@ const styles = {
   techPosts : {
     padding : 2,
     width: '100%',
-//    display : 'flex',
-//    justifyContent : 'start',
+    display : 'flex',
+    justifyContent : 'space-around',
   },
 
   images : {
@@ -30,6 +31,7 @@ const styles = {
     flexDirection : 'row', 
     flexGrow : 'stretch', 
     justifyContent : 'center',
+    alignItems : 'center',
     paddingBottom : 7,
   },
 };
@@ -75,11 +77,12 @@ const Containers = (props) => {
         }
       </Grid>
       <Box sx={styles.techPosts}>
-        <Posts title="기술 관련 게시글" tag="기술" width="100%"/>
+        <Posts title="기술 관련 게시글" tag="기술" width="70%"/>
+        <HelpMeMessage />
       </Box>
       <Box sx={styles.images}>
         <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit : 'scale-down'}}/>
-        <img src="/static/images/sw_college_emblem.png" style={{objectFit : 'scale-down'}}/>
+        <img src="/static/images/sw_college_emblem.png" style={{ height: '100px', objectFit : 'scale-down'}}/>
       </Box>
       </Grid>
     </div>
