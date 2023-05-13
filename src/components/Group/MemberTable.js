@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button, Chip, Paper, IconButton, AppBar, Toolbar,
   Table, TableBody, TableHead, TableRow, TableContainer, TablePagination,
   Typography, Checkbox, Menu, MenuItem
 } from '@mui/material';
 import { CustomTableCell, CustomTableRow } from '@components/CustomTable';
-import { PersonAddOutlined, Close, MoreVertOutlined, RemoveCircleOutline,
+import {
+  PersonAddOutlined, Close, MoreVertOutlined, RemoveCircleOutline,
 } from '@mui/icons-material';
 import AddMembersDlg from '@components/Group/AddMembersDlg';
 import ConfirmDialog from '@components/ConfirmDialog';
@@ -38,7 +39,6 @@ const styles = {
     paddingTop: "2px",
     paddingBottom: "2px",
     margin: 0,
-    //color : 'white',
   },
 
   container: {
@@ -69,7 +69,7 @@ const styles = {
   },
 };
 
-const EditUserMenu = (props) => { 
+const EditUserMenu = (props) => {
   return (
     <div>
       <Menu open={props.anchorEl != null} onClose={props.onClose} anchorEl={props.anchorEl} keepMounted >
@@ -135,7 +135,7 @@ const MemberTable = (props) => {
       return;
     } else if (menu == "move") {
       changeRole(state.targetUsers);
-      setState({ ...state, menuAnchor: null });//, targetUsers : []});
+      setState({ ...state, menuAnchor: null });
     }
   }
 
@@ -191,7 +191,7 @@ const MemberTable = (props) => {
     Server.deleteMembers(props.group.groupID, users).then(data => {
       members = members.filter(u => { return (!data.deleted.includes(u.email)) });
       data.deleted?.forEach(d => { selected[d] = false; });
-      setState({ ...state, selected: { ...selected }, menuAnchor : null });
+      setState({ ...state, selected: { ...selected }, menuAnchor: null });
       setMembers([...members]);
     }).finally(() => {
       //console.log(state.members);
@@ -247,7 +247,7 @@ const MemberTable = (props) => {
     return (
       <TableBody sx={styles.table_body}>
         {members.sort((a, b) => a.name - b.name).slice(page * rowsPerPage, (page + 1) * rowsPerPage).map(row => (
-          <CustomTableRow /* sx={styles.row} */ key={row.id}>
+          <CustomTableRow key={row.id}>
             <CustomTableCell >
               <Checkbox color="primary" size="small" sx={styles.icon_in_table}
                 disabled={row.role === 'O'}
@@ -285,20 +285,13 @@ const MemberTable = (props) => {
       let invalid_members = (invalid_members && invalid_members.length > 0) ? invalid_members : [];
       console.log("MemberTable:handleAddMember")
       console.log(membersAdded);
-      /*
-      if (membersAdded.find((m) => {return mbr.find((i) => i.id === m.id) ? false : true})) {
-        mbr.push(m);
-        selected[m.id] = false;
-      }*/
 
       membersAdded.map((m) => {
-        //if(! members.find(i => i.id === m.id)) { // 중복제거 
         members.push(m);
-        //}
         selected[m.email] = false;
       });
       setState({
-        ...state, memberDlgOpen: open, selected : {...selected}, invalid_members,
+        ...state, memberDlgOpen: open, selected: { ...selected }, invalid_members,
         confirmDlgOpen: ((invalid_members && invalid_members.length > 0) ? true : false)
       });
       setMembers([...members]);
@@ -309,7 +302,7 @@ const MemberTable = (props) => {
   }
 
   const handleChangePage = (event, newPage) => {
-    setState({ ...state, page: newPage }); //(newPage);
+    setState({ ...state, page: newPage });
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -318,7 +311,6 @@ const MemberTable = (props) => {
 
   return (
     <React.Fragment>
-      {/* <CssBaseline /> */}
       <div style={{ height: 650, paddingBottom: 20 }}>
         <AppBar sx={styles.appBar}>
           <Toolbar>
@@ -329,17 +321,9 @@ const MemberTable = (props) => {
             <IconButton edge="start" color="gray" onClick={props.onClose} aria-label="close">
               <Close />
             </IconButton>
-            {/*
-            <Button autoFocus color="primary" onClick={props.onClose}>
-              Close
-            </Button> */}
           </Toolbar>
         </AppBar>
 
-        {/* <Paper elevation={0} sx={styles.title_paper}>
-          <Typography variant="h6" align='center' style={{ flexGrow: 1 }}>
-            {props.title} </Typography>
-        </Paper> */}
         <TableContainer sx={styles.container}>
           <Table stickyHeader size="small" sx={styles.table}>
             {displayTableHead()}

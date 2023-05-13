@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconButton, Snackbar, SnackbarContent } from '@mui/material';
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { CheckCircle, Error, Info, Close, Warning } from '@mui/icons-material';
 import { amber, green } from '@mui/material/colors';
 
@@ -40,12 +40,11 @@ const styles = {
 };
 
 const Span = styled('span')({
-  display : 'flex',
+  display: 'flex',
   alignItems: 'center',
 });
 
 function SnackbarMessage({ open, onClose, variant, message }) {
-  const classes = styles;
   const Icon = variantIcon[variant];
   return (
     <div>
@@ -59,11 +58,11 @@ function SnackbarMessage({ open, onClose, variant, message }) {
         onClose={onClose}
       >
         <SnackbarContent
-          sx={classes[variant]}
+          sx={styles[variant]}
           aria-describedby="client-snackbar"
           message={
-            <Span id="client-snackbar" /*sx={classes.message}*/>
-              <Icon sx={classes.iconVariant} />
+            <Span id="client-snackbar" >
+              <Icon sx={styles.iconVariant} />
               {message}
             </Span>
           }
@@ -74,8 +73,8 @@ function SnackbarMessage({ open, onClose, variant, message }) {
               color="inherit"
               onClick={onClose}
             >
-              <Close sx={classes.icon} />
-            </IconButton>,
+              <Close sx={styles.icon} />
+            </IconButton>
           ]}
         />
       </Snackbar>

@@ -20,7 +20,7 @@ const styles = {
 
 const Auth = (props) => {
   let snackbar = useSnackbar();
-  let {login, mode, setLoginMode} = useAuth();
+  let { login, mode, setLoginMode } = useAuth();
   let [openRegister, setOpenRegister] = useState(false);
   let [openSignIn, setOpenSignIn] = useState(false);
   let navigate = useNavigate();

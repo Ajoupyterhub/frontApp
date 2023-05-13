@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Text from '@components/typography/Text';
 import config from '@lib/config';
@@ -79,7 +79,7 @@ const Posts = (props) => {
 
   useEffect(() => {
     (async function () {
-      if(props.tag == 'all') {
+      if (props.tag == 'all') {
         setPosts(await Server.getAllPosts())
       }
       else {

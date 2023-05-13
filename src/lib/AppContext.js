@@ -73,9 +73,9 @@ export const useConfirm = () => {
 const AppContext = ({ children }) => {
   let [user, loginDispatcher] = useReducer(userReducer, null);
   let [snackState, snackbarDispatcher] = useReducer(snackReducer,
-           { open: false, variant: 'success', message: '' })
+    { open: false, variant: 'success', message: '' })
   let [confirm, openCloseConfirm] = useReducer(confirmReducer,
-           { open: false, title: '', message: '', resolve: null })
+    { open: false, title: '', message: '', resolve: null })
   let [mode, loginModeDispatcher] = useReducer(loginModeReducer, 'Google');
   let [slackState, slackDispatcher] = useReducer(slackReducer, true);
 
@@ -122,7 +122,7 @@ const AppContext = ({ children }) => {
   }
 
   const setSlack = (onoff) => {
-    slackDispatcher({type : onoff});
+    slackDispatcher({ type: onoff });
   }
 
   return (

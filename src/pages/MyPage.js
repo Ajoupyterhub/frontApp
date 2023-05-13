@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
-import {  Tabs, Tab } from '@mui/material'; 
-import {  Group, ListAlt } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Tabs, Tab } from '@mui/material';
+import { Group, ListAlt } from '@mui/icons-material';
 import Containers from '@components/Containers/Containers';
 import GroupList from '@components/Group/GroupList';
 import { currentUser } from '@lib/AppContext';
@@ -50,10 +50,9 @@ const styles = {
 const MyPage = (props) => {
   let [currentTab, setCurrentTab] = useState(0);
   let user = currentUser();
-  //let {currentUser} = useContext(UserContext);
 
   const handleTabChange = (e, newTab) => {
-      setCurrentTab(newTab);
+    setCurrentTab(newTab);
   }
 
   const canControlGroups = () => {
@@ -77,7 +76,7 @@ const MyPage = (props) => {
             disabled={!canControlGroups()} />
         </Tabs>
 
-        {(currentTab) ?  <GroupList /> : <Containers /> }
+        {(currentTab) ? <GroupList /> : <Containers />}
       </div>
     </React.Fragment>
   );

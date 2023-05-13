@@ -1,8 +1,10 @@
 import React from 'react';
-import {styled} from '@mui/material/styles';
-import { Box, Table, TableContainer, TablePagination, TableBody, 
-  TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import {tableCellClasses} from '@mui/material/TableCell';
+import { styled } from '@mui/material/styles';
+import {
+  Box, Table, TableContainer, TablePagination, TableBody,
+  TableCell, TableHead, TableRow, Typography
+} from '@mui/material';
+import { tableCellClasses } from '@mui/material/TableCell';
 
 export const CustomTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -27,45 +29,34 @@ export const CustomTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const classes = {
-  layout : {
+  layout: {
     minWidth: 800,
     maxWidth: 1200,
     padding: 3, //theme.spacing(3),
-    marginLeft : 'auto',
+    marginLeft: 'auto',
     marginRight: 'auto',
   },
   table: {
     minWidth: 800,
     maxWidth: 1200,
     padding: 3, //theme.spacing(3),
-    marginLeft : 'auto',
+    marginLeft: 'auto',
     marginRight: 'auto',
     //justifyContent: "center",
   },
-  container : {
+  container: {
     maxHeight: 400, //`calc(100vh - 120px)`,
   },
-  pagination : {
-    //minWidth: 400,
-    //maxWidth: 900,
-    //padding: theme.spacing(3),
-    marginLeft : 'auto',
-    //marginRight: 'auto',
-    //marginTop : 'auto',
+  pagination: {
+    marginLeft: 'auto',
   },
 };
 
 
-export default function CustomTable(props) { 
-  //let classes = useStyles(props);
+export default function CustomTable(props) {
   let [page, setPage] = React.useState(0);
-  let [rowsPerPage, setRowsPerPage] = React.useState(10); 
+  let [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  function handleSettingBtnClick(row) {
-    return function () {
-
-    }
-  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -76,39 +67,39 @@ export default function CustomTable(props) {
   };
 
   return (
-    <Box  sx={classes.layout} >
-    <TableContainer sx={classes.container}>
-    <Table stickyHeader size="small"  sx={classes.table}>
-      <TableHead>
-        <TableRow>
-          { props.columnNames !== null && props.columns.map( col => (
-          <CustomTableCell align="center" key={`table-head-${col.key}`}> {col.displayName} </CustomTableCell>
-          ))}
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {props.data && props.data.map( (row, index) => (
-          <CustomTableRow key={`table-row-${index}`}>
-            { props.columns !== null && props.columns.map( col => (
-              <CustomTableCell align = "center" key={`table-row-${index}-${col.key}`}> 
-                <Typography variant="inherit" > {row[col.key]} </Typography> 
-              </CustomTableCell>
+    <Box sx={classes.layout} >
+      <TableContainer sx={classes.container}>
+        <Table stickyHeader size="small" sx={classes.table}>
+          <TableHead>
+            <TableRow>
+              {props.columnNames !== null && props.columns.map(col => (
+                <CustomTableCell align="center" key={`table-head-${col.key}`}> {col.displayName} </CustomTableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {props.data && props.data.map((row, index) => (
+              <CustomTableRow key={`table-row-${index}`}>
+                {props.columns !== null && props.columns.map(col => (
+                  <CustomTableCell align="center" key={`table-row-${index}-${col.key}`}>
+                    <Typography variant="inherit" > {row[col.key]} </Typography>
+                  </CustomTableCell>
+                ))}
+              </CustomTableRow>
             ))}
-          </CustomTableRow>
-        ))}
-      </TableBody>
-    </Table>
-    </TableContainer>
-    <TablePagination 
-      sx = {classes.pagination}
-      rowsPerPageOptions={[10, 25, 40]}
-      component="div"
-      count={props.data && props.data.length || 0}
-      rowsPerPage={rowsPerPage}
-      page={page}
-      onPageChange={handleChangePage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-    />
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        sx={classes.pagination}
+        rowsPerPageOptions={[10, 25, 40]}
+        component="div"
+        count={props.data && props.data.length || 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Box>
   )
 }

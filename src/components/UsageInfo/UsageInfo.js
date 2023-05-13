@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Box, Chip, Paper, Typography } from '@mui/material';
-import {Chart} from 'react-google-charts';
+import { Chart } from 'react-google-charts';
 import { styled } from '@mui/material/styles';
-import {currentUser, UIContext} from '@lib/AppContext';
+import { currentUser, UIContext } from '@lib/AppContext';
 
 const styles = {
   root: {
@@ -11,9 +11,9 @@ const styles = {
     backgroundColor: '#4a7ec9',
     display: 'flex',
     flexDirection: 'column',
-    alignItems : 'stretch',
+    alignItems: 'stretch',
     marginTop: 1,
-    marginBottom : 1,
+    marginBottom: 1,
   },
 
   accessLog: {
@@ -26,18 +26,18 @@ const styles = {
 
   usage: {
     //width: '69%',
-    display : 'flex',
-    flexDirection : 'column',
-    flexGrow : 1,
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
     backgroundColor: '#e1f5fe',
     padding: 1,
-    justifyContent : 'space-around',
+    justifyContent: 'space-around',
   },
 
-  chart : {
-    padding : 0,
-    margin : 0,
-    backgroundColor : 'inherit',
+  chart: {
+    padding: 0,
+    margin: 0,
+    backgroundColor: 'inherit',
   },
 
 }
@@ -51,15 +51,15 @@ const Text = styled(Typography)({
 });
 
 const LogItem = styled(Box)({
-  display : 'flex',
-  justifyContent : 'space-between',
+  display: 'flex',
+  justifyContent: 'space-between',
   margin: '8px',
 })
 
 const colorMap = {
-  code : 'primary', //'#3366CC', //Google Blue
-  datascience : 'error', //'#DC3912', //Google Red
-  tensorflow : 'warning', //'#FF9900',  //Google Yellow, Green #109618
+  code: 'primary', //'#3366CC', //Google Blue
+  datascience: 'error', //'#DC3912', //Google Red
+  tensorflow: 'warning', //'#FF9900',  //Google Yellow, Green #109618
 }
 
 const AccessLog = (props) => {
@@ -69,7 +69,7 @@ const AccessLog = (props) => {
   const datetimeTotext = (datetime) => {
     let date = new Date(datetime);
     let time = `${date.getHours()}시 ${date.getMinutes()}분`
-    return `${date.getFullYear()}년 ${date.getMonth()+1}월 ${date.getDate()}일 ${time}`;
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${time}`;
   }
 
   return (
@@ -79,9 +79,9 @@ const AccessLog = (props) => {
         {user?.accessLogs.map(l => {
           return (
             <LogItem key={l.datetime}>
-            <Text variant='subtime1' color='black' noWrap title={datetimeTotext(l.datetime)}> 
-              {datetimeTotext(l.datetime)}</Text>
-            <Chip label ={l.container} color={colorMap[l.container]} />
+              <Text variant='subtime1' color='black' noWrap title={datetimeTotext(l.datetime)}>
+                {datetimeTotext(l.datetime)}</Text>
+              <Chip label={l.container} color={colorMap[l.container]} />
             </LogItem>
           )
         })
@@ -94,12 +94,12 @@ const AccessLog = (props) => {
 const Usage = (props) => {
   const user = currentUser();
 
-  const {allUsage} = useContext(UIContext); 
+  const { allUsage } = useContext(UIContext);
 
   const options = {
     title: "", //컨테이너 사용현황",
-    backgroundColor : "#e1f5fe",
-    chartArea: {'width': '100%', 'height': '80%'},
+    backgroundColor: "#e1f5fe",
+    chartArea: { 'width': '100%', 'height': '80%' },
     pieHole: 0.4,
     is3D: false,
   };
@@ -108,23 +108,23 @@ const Usage = (props) => {
     <React.Fragment>
       <Box sx={styles.usage}>
         <Box>
-        <Heading variant='h5' color='black'> 컨테이너 사용 현황</Heading>
-        <Chart 
+          <Heading variant='h5' color='black'> 컨테이너 사용 현황</Heading>
+          <Chart
             chartType="PieChart"
             data={user.usageStat}
             options={options}
-            style = {styles.chart}
-            />
+            style={styles.chart}
+          />
         </Box>
         <Box>
-        <Heading variant='h5' color='black'> 전체 사용자 현황</Heading>
-        <Chart 
+          <Heading variant='h5' color='black'> 전체 사용자 현황</Heading>
+          <Chart
             chartType="PieChart"
             /* data={context.allUsage} */
             data={allUsage}
             options={options}
-            style = {styles.chart}
-            />
+            style={styles.chart}
+          />
         </Box>
       </Box>
     </React.Fragment>

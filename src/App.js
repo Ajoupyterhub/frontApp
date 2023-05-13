@@ -13,9 +13,7 @@ const styles = {
     position: 'fixed',
     top: '60px',
     width: '100%',
-    //minHeight : `calc(100vh - 60px)`,
     height: '100vh',
-    //display : 'flex',
     overflow: 'auto',
   },
 };

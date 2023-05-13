@@ -12,17 +12,16 @@ const PostsBox = styled.div`
   display : flex;
   flex-direction : 'row';
 `
-const Home = (props) => { 
-    return (
-      <>
+const Home = (props) => {
+  return (
+    <>
       <Banner src="/static/images/background.png" alt="banner" />
       <PostsBox>
-      <Posts title="최근 게시글" tag="all"/>
-      <Posts title="가이드 게시글" tag="사용가이드"/>
+        <Posts title="최근 게시글" tag="all" />
+        <Posts title="가이드 게시글" tag="사용가이드" />
       </PostsBox>
-      </>
-    )
+    </>
+  )
 }
-  
+
 export default Home;
-  

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Button, Chip, TextField, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, CircularProgress, Paper
+  Button, TextField, Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, CircularProgress
 } from '@mui/material';
 import { green } from '@mui/material/colors';
 import Server from '@lib/server';
@@ -27,10 +27,6 @@ const AddMembersDlg = (props) => {
     emailAddrInputs: "",
   });
 
-  //let emailAddrInputs = "";
-  //let emailList = [];
-  //let invalidatedEmailList = [];
-
   const handleTextChange = (e) => {
     setState({ ...state, emailAddrInputs: e.target.value });
     return;
@@ -38,7 +34,7 @@ const AddMembersDlg = (props) => {
 
   const addMember = () => {
     //let reqData = [];
-    const hostDomain = config.HOST_DOMAIN; //GoogleConfig.hosted_domain;
+    const hostDomain = config.HOST_DOMAIN;
     let validEmails = [];
     let invalid_emails = [];
     state.emailAddrInputs.replace(/,/g, ' ').split(/[\s+]/)
@@ -117,11 +113,6 @@ const AddMembersDlg = (props) => {
           </form>
           {state.loading && <CircularProgress sx={styles.progress} />}
         </DialogContent>
-        {/*
-          <DialogContent>
-            <Button onClick={addMember}> Add Member </Button>
-          </DialogContent>
-          */}
         {state.invalidatedEmailList.length > 0 &&
           <DialogContent>
             <DialogContentText>

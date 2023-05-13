@@ -18,7 +18,8 @@
   "scripts": {
     "start": "webpack serve --open",
     "watch": "webpack watch",
-    "build": "rm ./server/public/static/index.bundle.*.js; webpack --mode development --progress --config webpack.config.js "
+    "build": "rm ./server/public/static/index.bundle.*.js; webpack --mode development --progress --config webpack.config.js ",
+    "build:prod": "rm ./server/public/static/index.bundle.*.js; webpack --mode production --progress --config webpack.config.js "
   },
   "author": "Jae Young Choi",
   "license": "MIT",

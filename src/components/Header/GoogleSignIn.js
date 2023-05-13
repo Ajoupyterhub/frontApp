@@ -8,22 +8,15 @@ import Server from '@lib/server';
 
 const GoogleSignInBtn = (props) => {
   let snackbar = useSnackbar();
-  let {login} = useAuth(); 
+  let { login } = useAuth();
   let navigate = useNavigate();
-
-  /*  For credentialResponse, use the following.
-        const base64Payload = credentials.credential.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
-        const payload = decodeURIComponent(escape(atob(base64Payload))); 
-        const data = JSON.parse(payload);
-        console.log(data);
-  */
 
   const handleGoogleLoginSuccess = (userProfile) => {
 
     Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
         login(d.user);
-        navigate("/user", {replace : true});
+        navigate("/user", { replace: true });
       }
     }).catch(error => {
       console.log("Error Occurred when Sign In");
@@ -58,21 +51,21 @@ const GoogleSignInBtn = (props) => {
         }
         snackbar('error', '로그인 과정에 에러가 발생했습니다.');
       },
-      hosted_domain: GoogleConfig.hosted_domain, //'ajou.ac.kr', 
+      hosted_domain: GoogleConfig.hosted_domain, 
       prompt: 'select_account',
       flow: 'implicit',
       scope: 'profile email',
     });
 
-  return ( (props.icon) ? 
+  return ((props.icon) ?
     <IconButton
       variant="contained"
       onClick={handleGoogleSignIn}
       disabled={props.disabled}
     >
       {props.icon}
-    </IconButton> 
-    : 
+    </IconButton>
+    :
     <Button
       sx={{ width: '100%' }}
       variant="contained"
@@ -80,7 +73,7 @@ const GoogleSignInBtn = (props) => {
       onClick={handleGoogleSignIn}
       disabled={props.disabled}>
       {props.children || 'Sign In with Google'}
-    </Button> 
+    </Button>
   )
 }
 

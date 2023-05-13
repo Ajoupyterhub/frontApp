@@ -1,22 +1,23 @@
-import React, {useContext, useState} from 'react';
-import { Box, FormControl, Input, InputLabel, Checkbox, 
+import React, { useContext, useState } from 'react';
+import {
+  Box, FormControl, Input, InputLabel, Checkbox,
   Typography, FormControlLabel, FormLabel, RadioGroup, Radio
 } from '@mui/material';
-import {useSnackbar} from '@lib/AppContext';
+import { useSnackbar } from '@lib/AppContext';
 import Server from '@lib/server';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
 
 const styles = {
   paper: {
-    width : '400px', 
+    width: '400px',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent : 'center',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 1, 
+    marginTop: 1,
     marginBottom: 1,
     marginLeft: 1,
-    marginRight: 1, 
+    marginRight: 1,
   },
   radioGroup: {
     display: 'flex',
@@ -25,29 +26,30 @@ const styles = {
   },
   form: {
     width: '100%', // Fix IE11 issue.
-    gap : "5px",
-    display : 'flex',
+    gap: "5px",
+    display: 'flex',
     flexDirection: 'column',
-    justifyContent : 'center',
+    justifyContent: 'center',
     alignItems: 'center',
 
   },
   submit: {
-    display : 'flex',
+    display: 'flex',
     width: '100%',
-    justifyContent : 'center',
-    marginTop: 2, 
+    justifyContent: 'center',
+    marginTop: 2,
   },
 }
 
 const RegisterForm = (props) => {
   const snackbar = useSnackbar();
   let [registerData, setRegisterData] = useState(
-    {academicID: '', 
-     dept: '', 
-     primary_role: 'U', 
-     errorMsg: '', 
-     confirmPrivacy : false,
+    {
+      academicID: '',
+      dept: '',
+      primary_role: 'U',
+      errorMsg: '',
+      confirmPrivacy: false,
     }
   );
   let [verified, setVerify] = useState(false);
@@ -57,17 +59,17 @@ const RegisterForm = (props) => {
     //event.preventDefault();
     let value = (controlName == 'confirmPrivacy') ? event.target.checked : event.target.value;
 
-    let newData = {...registerData, [controlName] : value}
+    let newData = { ...registerData, [controlName]: value }
 
     setRegisterData(newData);
     setVerify(verifyInputData(newData));
   }
 
   const verifyInputData = (data) => {
-    const {academicID, dept, confirmPrivacy} = data;
+    const { academicID, dept, confirmPrivacy } = data;
 
     const academicIDRegex = /^[0-9]{9}$/g;
-    if(academicIDRegex.test(academicID)) {
+    if (academicIDRegex.test(academicID)) {
       let first4 = parseInt(academicID.slice(0, 4));
       let thisYear = parseInt((new Date()).getFullYear());
       if (first4 < 1980 || first4 > thisYear) {
@@ -76,20 +78,20 @@ const RegisterForm = (props) => {
       }
     }
     else {
-      if(academicID.length == 9) {
+      if (academicID.length == 9) {
         setErrorMsg("Invalid academic ID. Please, give me a valid academic ID")
       }
       else {
         setErrorMsg('');
       }
       return false;
-    } 
+    }
 
-    if(dept.length < 1) {
+    if (dept.length < 1) {
       return false;
     }
 
-    if(!confirmPrivacy) {
+    if (!confirmPrivacy) {
       return false;
     }
     setErrorMsg('');
@@ -102,18 +104,17 @@ const RegisterForm = (props) => {
     data["academicID"] = registerData.academicID;
     data["dept"] = registerData.dept;
     data["primary_role"] = registerData.primary_role;
-    data["email"] = res.email; //getEmail();
-    data["name"] = res.name; //getName();
-    data["picture"] = res.picture; //getImageUrl();
+    data["email"] = res.email; 
+    data["name"] = res.name; 
+    data["picture"] = res.picture; 
     data["loginType"] = "Google";
     console.log(data)
 
     Server.registerUser(data).then((d) => {
-      if(d.msg != "OK")
+      if (d.msg != "OK")
         snackbar("error", d.msg);
       else {
         snackbar("success", "회원 가입이 완료되었습니다.");
-        //props.onMoveTab(0);   
       }
     }).catch(e => {
       console.log("Server.registerUser Error", e);
@@ -125,10 +126,10 @@ const RegisterForm = (props) => {
   return (
     <React.Fragment>
       <Box sx={styles.paper}>
-          <Typography variant="h6">
-              가입하고 코딩하기 (Register)
-          </Typography>
-        <form sx={styles.form} onSubmit={handleRegisterBtn} > 
+        <Typography variant="h6">
+          가입하고 코딩하기 (Register)
+        </Typography>
+        <form sx={styles.form} onSubmit={handleRegisterBtn} >
           {/*
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Ajou Email Address</InputLabel>
@@ -175,31 +176,33 @@ const RegisterForm = (props) => {
           <FormControl component="fieldset" margin="normal" required fullWidth>
             <FormLabel component="legend" margin="normal" >역할</FormLabel>
             <RadioGroup sx={styles.radioGroup} aria-label="role" name="role"
-              value={registerData.primary_role} onChange={handleInputChange("primary_role")}>
-              <FormControlLabel style={{ margin: 'auto' }} value="O" control={<Radio color="primary" />}
+              value={registerData.primary_role} 
+              onChange={handleInputChange("primary_role")}>
+              <FormControlLabel style={{ margin: 'auto' }} value="O" 
+                control={<Radio color="primary" />}
                 label="교수" labelPlacement="end" />
-              <FormControlLabel style={{ margin: 'auto' }} value="U" control={<Radio color="primary" />}
+              <FormControlLabel style={{ margin: 'auto' }} value="U" 
+                control={<Radio color="primary" />}
                 label="학생" labelPlacement="end" />
             </RadioGroup>
           </FormControl>
           {/* 학생은 교과목 그룹에 속해야 사용할 수 있으며, 교수 역할은 학과 및 임용번호 확인 후 가입이 완료됩니다.*/}
-          <Typography sx={styles.submit} /* fullWidth centered="true" */ variant='body2'>
+          <Typography sx={styles.submit} variant='body2'>
             Ajoupyterhub는 귀하의 암호를 보관하지 않습니다. 학교 이메일에 의한 Google 로그인으로 바로 사용할 수 있습니다.
           </Typography>
 
-          <br/>
+          <br />
 
-          <Typography sx={styles.submit} /* fullWidth centered="true" */ variant='body1' >
+          <Typography sx={styles.submit} variant='body1' >
             개인정보 수집 및 이용 동의
           </Typography>
-          <Typography sx={styles.submit} /* fullWidth centered="true" */ variant='body2'>
+          <Typography sx={styles.submit} variant='body2'>
             귀하의 개인정보 (학번 또는 임용번호, 이메일, 소속학과, 이름) 수집에 동의합니다.
           </Typography>
 
           <FormControl component="fieldset" margin="normal" required fullWidth>
             <FormControlLabel style={{ margin: 'auto' }} value={registerData.confirmPrivacy}
               control={<Checkbox name="confirmPrivacy" color="primary"
-                /*checked={registerData.confirmPrivacy}*/
                 onChange={handleInputChange("confirmPrivacy")} />}
               label="동의합니다." labelPlacement="end" />
           </FormControl>
@@ -235,5 +238,5 @@ const RegisterForm = (props) => {
   );
 }
 
-export default RegisterForm; 
+export default RegisterForm;
 

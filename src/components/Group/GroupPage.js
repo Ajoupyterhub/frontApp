@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button, Dialog, DialogContent, DialogTitle, DialogContentText,
   FormControl, FormControlLabel, InputLabel, Input, FormLabel,
@@ -57,26 +57,18 @@ const GroupPage = (props) => {
     memoryLimit: 2,
   });
 
-  let {group} = props;
+  let { group } = props;
 
   const handleChange = name => (event, newValue) => {
-    /* if( name == 'expiryDate') {
-      let date = new Date(event.target.value);
-      setState({expiryDate : date});
-      return;
-    } */
     if (name == 'kind') {
       setState({ ...state, [name]: event.target.value })
     }
     if (name == 'memoryLimit') {
-      setState({  ...state, [name]: newValue });
+      setState({ ...state, [name]: newValue });
     }
   };
 
   const handleGroupPropertiesChange = groupData => {
-    /*
-    if (projectData.type !== "DELETE_PROJECT")
-      setState({ projectData });*/
     props.onChangeProjectData(groupData);
     return;
   };
@@ -101,16 +93,16 @@ const GroupPage = (props) => {
   return (
     <React.Fragment>
       <Dialog
-        maxWidth="sm" /* {maxWidth} */
+        maxWidth="sm" 
         open={props.open}
-        onClose={props.onClose(false)} //(false)} // Tip: props.onClose makes this dialog modal
+        onClose={props.onClose(false)} 
       >
         <DialogTitle id="dialog-title"> {props.title} </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {props.titleText}
           </DialogContentText>
-          <form style={{padding: '8px'}} /* className={classes.form}*/ onSubmit={handleUpdateGroupBtn}> {/* action="/account" method="POST"> */}
+          <form style={{ padding: '8px' }} onSubmit={handleUpdateGroupBtn}> 
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="courseName">교과목 이름 </InputLabel>
               <Input id="courseName" name="courseName" defaultValue={(group && group.name)} />
@@ -123,12 +115,12 @@ const GroupPage = (props) => {
             */}
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="classSchedule">수업 일정 (예: 수금B, 화B금C)</InputLabel>
-              <Input id="classSchedule" name="classSchedule" defaultValue="" /* group && group.classSchedule}*/ />
+              <Input id="classSchedule" name="classSchedule" defaultValue="" />
             </FormControl>
 
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="dept">학과</InputLabel>
-              <Input id="dept" name="dept" defaultValue="SW학과" /* {group && group.dept}*/ />
+              <Input id="dept" name="dept" defaultValue="SW학과" />
             </FormControl>
 
             {/*
@@ -165,11 +157,9 @@ const GroupPage = (props) => {
               fullWidth
               variant="contained"
               color="primary"
-              sx={{marginTop: 2}}
-              /* className={classes.submit} */
-            //onClick={handleUpdateGroupBtn} // Must remove to get FormData. FormData uses Form submit
+              sx={{ marginTop: 2 }}
             >
-              { (props.group) ?  "그룹 정보 수정" : "그룹 만들기"}
+              {(props.group) ? "그룹 정보 수정" : "그룹 만들기"}
             </Button>
             {/*
             <Typography className={classes.submit} fullwidth centered> 

@@ -52,19 +52,15 @@ const stylesContainer = {
 
 const ContainerPlayer = (props) => {
 
-  //let con = props.container; displayName, kind, description
-
   let [status, setStatus] = useState(null);
   let [progress, setProgress] = useState(false);
   let [passcodeVisibility, setVisiblePasscode] = useState(false);
   let [passcode, setPasscode] = useState(null);
   let [linkhash, setLinkhash] = useState(null);
-  let conWindowRef = useRef(null); //, setConWindow] = useState(null);
+  let conWindowRef = useRef(null); 
 
   let { container } = props;
 
-  //let context = useContext(AppContext);
-  //let user = context.user;
   const user = currentUser();
   const snackbar = useSnackbar();
   const getConfirm = useConfirm();
@@ -77,7 +73,6 @@ const ContainerPlayer = (props) => {
 
   const handleContainerBtnClick = () => {
     if (status === "running") {
-      //setConfirmationStop(true);
       getConfirm("이 서비스를 중지하겠습니까?", "\"OK\"를 누르면 컨테이너가 중지됩니다.")
         .then(d => {
           if (d) {
@@ -108,7 +103,6 @@ const ContainerPlayer = (props) => {
           return;
         }
         else {
-          console.log(d)
           setStatus("running");
           setPasscode(d.passcode);
           setLinkhash(d.link_hash);

@@ -1,7 +1,7 @@
 import config from './config';
 
-function  asyncFetch(url, options={method : "GET"}, callback = null) {
-  return (( async function (url, options, callback){
+function asyncFetch(url, options = { method: "GET" }, callback = null) {
+  return ((async function (url, options, callback) {
     let data;
     await fetch(url, options).then(r => r.json()).then(json => {
       data = (callback) ? callback(json) : json;
@@ -15,9 +15,10 @@ function  asyncFetch(url, options={method : "GET"}, callback = null) {
 
 const Server = {
 
-  testAsync : function () { // 호출하는 부분에서, await로 call 해야 함. ==> 의미 없음
-    return asyncFetch('/user/jyc/notebook/wetty', 
-      {method: "GET",
+  testAsync: function () { // 호출하는 부분에서, await로 call 해야 함. ==> 의미 없음
+    return asyncFetch('/user/jyc/notebook/wetty',
+      {
+        method: "GET",
       })
   },
 
@@ -222,15 +223,6 @@ const Server = {
    * @param {number} page
    * @returns {object}
    */
-  /*
-  export function getAllPosts(page = 0) {
-      return http.get(
-        page === 0
-          ? `${BLOG_URL}/page-data/index/page-data.json`
-          : `${BLOG_URL}/page-data/pages/${page + 1}/page-data.json`,
-      );
-    }
-    */
 
   getAllPosts: function (page = 0) {
     const BLOG_URL = config.BLOG_URL
@@ -243,12 +235,12 @@ const Server = {
       await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
       return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-        let date = frontmatter.date.split('T')[0]; //frontmatter.slug.match(/\d*$/)[0].split('');
+        let date = frontmatter.date.split('T')[0]; 
         if (date?.length === 0) date = '0'.repeat(6).split('');
         return {
           title: frontmatter.title,
           slug: frontmatter.slug,
-          date: date, //`${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
+          date: date, 
         };
       });
     })(url);
@@ -260,11 +252,6 @@ const Server = {
    * @param {string} tag
    * @returns {object}
    */
-  /*
-  export function getPostsByTag(tag) {
-    return http.get(`${BLOG_URL}/page-data/tags/${tag}/page-data.json`);
-  }
-  */
 
   getPostsByTag: function (tag) {
     const BLOG_URL = config.BLOG_URL;
@@ -274,13 +261,12 @@ const Server = {
       await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
       return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-        //let date = frontmatter.slug.match(/\d*$/)[0].split('');
         let date = frontmatter.date.split('T')[0]
         if (date?.length === 0) date = '0'.repeat(6).split('');
         return {
           title: frontmatter.title,
           slug: frontmatter.slug,
-          date: date, //`${date[0]}${date[1]}.${date[2]}${date[3]}.${date[4]}${date[5]}`,
+          date: date, 
         };
       });
     })(url);
