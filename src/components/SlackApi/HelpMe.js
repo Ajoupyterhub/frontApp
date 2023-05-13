@@ -1,6 +1,8 @@
 import React, {useState, useContext, useMemo} from 'react';
 import { Paper, Button, TextField, FormControl, Typography } from '@mui/material';
-import {AppContext} from '@lib/app-context';
+import { currentUser } from '@lib/AppContext';
+import { UIContext } from '@lib/AppContext';
+import config from '@lib/config';
 
 const styles = {
   messageBox : {
@@ -13,8 +15,8 @@ const styles = {
 }
 const HelpMeMessage = (props) => {
   let [text, setText] = useState("")
-  let context = useContext(AppContext);
-  let [lastMsgTime, setLastMsgTime] = useState(null);
+  let user = currentUser();
+  let {slackState, setSlack} = useContext(UIContext);
 
   const handleTextChange = (e) => {
     setText(e.target.value)
@@ -23,19 +25,21 @@ const HelpMeMessage = (props) => {
   const handleSendMessage = (e) => {
       e.preventDefault();
 
-      fetch(`/user/${context.user.id}/send`,
+      fetch(`/user/${user.id}/send`,
         { method : 'POST',
           headers : {'Content-Type': 'application/json'},
           body : JSON.stringify({text : `${text}`})
         }).then(d  => {
-          console.log(d.data);
-          setLastMsgTime(new Date());
+          console.log(d);
         }).catch(e => { console.log(e)}).finally(() => {
           setText('');
+          setSlack(false);
+          setTimeout(() => setSlack(true), config.SLACK_DURATION);
         }); 
     return
   }
 
+  /*
   const checkTime = (limitInMinutes = 1) => {
     let current = new Date();
     if(lastMsgTime) {
@@ -44,14 +48,20 @@ const HelpMeMessage = (props) => {
     }
     return false; 
   }
+  */
 
   return (
     <React.Fragment>
       <Paper sx={styles.messageBox}>
       <form /* style={{backgroundColor : '#efefef'}} */> 
+        { (slackState) ? 
         <Typography variant="body2" >
-        뭐가 잘 안될때, 알려주세요. 
+        뭔가 잘 안될때, 알려주세요. 
+        </Typography> :
+        <Typography variant="body2" >
+        잠시 후, 다시 보낼 수 있습니다.
         </Typography>
+        }
         <FormControl margin="normal" required fullWidth>
         <TextField
           id="helpMe"
@@ -59,10 +69,10 @@ const HelpMeMessage = (props) => {
           multiline
           rows={4}
           value={text}
+          disabled={!slackState}
           onChange = {handleTextChange}
         />
         </FormControl>
-
         <Button
           type="submit"
           fullWidth
@@ -70,7 +80,7 @@ const HelpMeMessage = (props) => {
           color="primary"
           onClick={handleSendMessage}
           sx={{ marginTop: 2 }}
-          disabled={checkTime()}
+          disabled={!slackState}
         >
           메시지 보내기
         </Button>

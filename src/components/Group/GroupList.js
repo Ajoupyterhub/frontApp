@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Box, Paper, Button, Menu, MenuItem } from '@mui/material';
 import { MoreVertOutlined, AddCircleOutline } from '@mui/icons-material';
-import { AppContext } from '@lib/app-context';
+import { currentUser, useSnackbar } from '@lib/AppContext';
 import GroupPage from '@components/Group/GroupPage';
 import MemberPage from '@components/Group/MemberPage';
 import CustomTable from '@components/CustomTable';
@@ -81,8 +81,8 @@ const GroupList = (props) => {
     { displayName: "담당교수", key: "ownerName" },
     { displayName: "더보기", key: "menu" },
   ]
-
-  let context = useContext(AppContext);
+  let user = currentUser();
+  let snackbar = useSnackbar();
 
 
   const handleMoreBtnClick = (btnId) => () => {
@@ -126,7 +126,7 @@ const GroupList = (props) => {
   }
 
   useEffect(() => {
-    let userID = (context.user) ? context.user.email.split('@')[0] : '';
+    let userID = (user) ? user.email.split('@')[0] : '';
     setState({ ...state, userID });
     //console.log(userID);
     Server.getGroupListByUserID(userID)
@@ -159,9 +159,9 @@ const GroupList = (props) => {
       const data = {
         //groupID : d.groupID,
         name: `${d.courseName}`,
-        owner: d.owner || context.user.id,
-        ownerEmail: d.ownerEmail || context.user.email, /// 조교가 수정할 경우도 고려해야 함. Backend에서 고려하고 있음.
-        ownerName: context.user.name,
+        owner: d.owner || user.id,
+        ownerEmail: d.ownerEmail || user.email, /// 조교가 수정할 경우도 고려해야 함. Backend에서 고려하고 있음.
+        ownerName: user.name,
         semester: d.semester,
         classSchedule: d.classSchedule,
         kind: d.kind,
@@ -178,10 +178,10 @@ const GroupList = (props) => {
             grp.dept = data.dept;
             grp.memoryLimit = data.memoryLimit;
             setGroupList(groupList);
-            context.snackbar("success", "그룹 정보를 변경하였습니다.")
+            snackbar("success", "그룹 정보를 변경하였습니다.")
           }
           else {
-            context.snackbar("error", "그룹 정보 변경 실패");
+            snackbar("error", "그룹 정보 변경 실패");
           }
         });
       }

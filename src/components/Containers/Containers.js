@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Grid, Box } from '@mui/material';
-import { AppContext } from '@lib/app-context';
+import { currentUser} from '@lib/AppContext';
 import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
 import Server from '@lib/server';
@@ -38,8 +38,9 @@ const styles = {
 
 
 const Containers = (props) => {
-  let context = useContext(AppContext);
-  const { user } = context; //props;
+  //let context = useContext(AppContext);
+  //const { user } = context; //props;
+  const user = currentUser();
 
   let [containerList, setContainerList] = useState([]);
   let [runnings, setRunnings] = useState([]);

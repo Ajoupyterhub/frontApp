@@ -108,10 +108,10 @@ app.post('/user/:userID/notebook', (req, res) => {
   console.log(data);
   if (data.action == 'start') {
     containers[data.kind].status = 'running';
-    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) // was status : 'OK'
+    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) 
   } else {
     containers[data.kind].status = null;
-    res.json({status : "OK"})   // was status : 'OK'
+    setTimeout(() => {res.json({status : "OK"})}, 3000)   
   }
 })
 

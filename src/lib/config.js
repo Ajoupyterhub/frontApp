@@ -39,6 +39,8 @@ const config = {
     },
 
     HOST_DOMAIN : 'ajou.ac.kr',
+
+    SLACK_DURATION : 60000,  /* 1분 */
     
     // AjouPyterHub 블로그
     BLOG_URL : 'https://ajoupyterhub.github.io/', //'http://ajoupyterhub.ajousw.kr',

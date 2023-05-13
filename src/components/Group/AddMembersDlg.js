@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
-import { Button,  Chip, TextField, Dialog, DialogActions, DialogContent, 
-  DialogContentText, DialogTitle, CircularProgress, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import {
+  Button, Chip, TextField, Dialog, DialogActions, DialogContent,
+  DialogContentText, DialogTitle, CircularProgress, Paper
+} from '@mui/material';
 import { green } from '@mui/material/colors';
 import Server from '@lib/server';
 import config from '@lib/config';
@@ -19,18 +21,18 @@ const styles = {
 
 const AddMembersDlg = (props) => {
   let [state, setState] = useState({
-    loading : false,
-    bShowWrongID : false,
-    invalidatedEmailList : [],
-    emailAddrInputs : "",
+    loading: false,
+    bShowWrongID: false,
+    invalidatedEmailList: [],
+    emailAddrInputs: "",
   });
 
   //let emailAddrInputs = "";
   //let emailList = [];
   //let invalidatedEmailList = [];
-  
+
   const handleTextChange = (e) => {
-    setState({...state, emailAddrInputs : e.target.value});
+    setState({ ...state, emailAddrInputs: e.target.value });
     return;
   }
 
@@ -48,7 +50,7 @@ const AddMembersDlg = (props) => {
           invalid_emails.push(e);
           return;
         }
-        if(s[1] === hostDomain) {
+        if (s[1] === hostDomain) {
           validEmails.push(e);
         }
         else {
@@ -56,13 +58,13 @@ const AddMembersDlg = (props) => {
         }
       });
 
-    if(validEmails.length == 0) {
+    if (validEmails.length == 0) {
       cleanState();
       props.onClose([], invalid_emails);
       return;
     }
     console.log(invalid_emails);
-    setState({...state, loading : true});
+    setState({ ...state, loading: true });
     Server.addMembers(props.groupID, validEmails).then(data => {
       /*
       invalid_emails.push(...(
@@ -70,74 +72,74 @@ const AddMembersDlg = (props) => {
           {return e.length > 0 && -1 == data.validated.findIndex((v) => {return e == v.email})})
         ))
       console.log(invalid_emails); */
-//      invalid_emails.push(...data.alreadyMembers);
-        console.log(data);
+      //      invalid_emails.push(...data.alreadyMembers);
+      console.log(data);
       invalid_emails.push(...data.validated);
 
       props.onClose(data.validated, invalid_emails);
-      setState({...state, emailAddrInputs : ''}); //, invalidatedEmailList: invalid_emails});
+      setState({ ...state, emailAddrInputs: '' }); //, invalidatedEmailList: invalid_emails});
     }).finally(() => {
-      setState({...state, loading : false, invalidatedEmailList : invalid_emails});
+      setState({ ...state, loading: false, invalidatedEmailList: invalid_emails });
     });
   }
 
   const cleanState = () => {
-    setState({ 
-      ...state, 
-      loading : false,
-      emailAddrInputs : "",
-      invalidatedEmailList : [],
+    setState({
+      ...state,
+      loading: false,
+      emailAddrInputs: "",
+      invalidatedEmailList: [],
     });
   }
 
-    return (
-      <div>
-        <Dialog maxWidth="md" open={props.open} onClose={props.onClose} aria-labelledby="form-dialog-title">
-          <DialogTitle id="form-dialog-title">그룹 멤버 추가</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              가입 대상자의 email 주소를 공백 또는 ','로 구분하여 입력하세요.
-            </DialogContentText>
-            <form style={{ display: 'flex', flexWrap: 'wrap', width: 700 }}>
-              <TextField
-                autoFocus
-                multiline
-                style={{ margin: 8 }}
-                rows="7"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                id="name"
-                label="Email Addresses"
-                type="email"
-                value={state.emailAddrInputs}
-                onChange={handleTextChange}/>            
-            </form>
-            {state.loading && <CircularProgress  sx={styles.progress} />}
-          </DialogContent>
-          {/*
+  return (
+    <div>
+      <Dialog maxWidth="md" open={props.open} onClose={props.onClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title">그룹 멤버 추가</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            가입 대상자의 email 주소를 공백 또는 ','로 구분하여 입력하세요.
+          </DialogContentText>
+          <form style={{ display: 'flex', flexWrap: 'wrap', width: 700 }}>
+            <TextField
+              autoFocus
+              multiline
+              style={{ margin: 8 }}
+              rows="7"
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              id="name"
+              label="Email Addresses"
+              type="email"
+              value={state.emailAddrInputs}
+              onChange={handleTextChange} />
+          </form>
+          {state.loading && <CircularProgress sx={styles.progress} />}
+        </DialogContent>
+        {/*
           <DialogContent>
             <Button onClick={addMember}> Add Member </Button>
           </DialogContent>
           */}
-          { state.invalidatedEmailList.length > 0 &&
+        {state.invalidatedEmailList.length > 0 &&
           <DialogContent>
             <DialogContentText>
               다음 email 주소는 이미 등록되어 있거나, 등록할 수 없는 이메일입니다. 다시 확인하여 주시기 바랍니다.
             </DialogContentText>
           </DialogContent>
-          }
-          <DialogActions>
-            <Button onClick={() => {cleanState(); props.onClose([], [])}} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={addMember} color="primary">
-              Add Members
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
-    );
-  }
+        }
+        <DialogActions>
+          <Button onClick={() => { cleanState(); props.onClose([], []) }} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={addMember} color="primary">
+            Add Members
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
 
 export default AddMembersDlg;

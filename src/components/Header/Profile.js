@@ -1,12 +1,16 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, Box, IconButton, Typography} from '@mui/material';
 import { PowerSettingsNew } from '@mui/icons-material';
 import MyProfile from './MyProfile';
-import { AppContext } from '@lib/app-context';
+import { useAuth, currentUser, useSnackbar } from '@lib/AppContext';
 import Server from '@lib/server';
 
 const Profile = (props) => {
-    const {user, logoutUser, snackbar} = useContext(AppContext)
+    const {logout} = useAuth();
+    const user = currentUser(); 
+    const snackbar = useSnackbar(); // , logoutUser, snackbar} = useContext(AppContext)
+    const navigate = useNavigate();
 
     let [bShowProfile, setbShowProfile] = useState(false);
 
@@ -20,7 +24,8 @@ const Profile = (props) => {
       }).catch(error => {
         console.log(error);
       }).finally(() => {
-        logoutUser();
+        logout();
+        navigate("/");
       });
     }
 

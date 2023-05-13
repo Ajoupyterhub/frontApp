@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Typography, Box, IconButton, Popover } from '@mui/material';
 import { Login, HowToReg } from '@mui/icons-material';
-import { AppContext } from '@lib/app-context';
+import { useSnackbar, useAuth } from '@lib/AppContext';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
 import RegisterForm from '@components/Header/Register';
 import SignInForm from '@components/Header/SignIn';
@@ -18,21 +19,24 @@ const styles = {
 };
 
 const Auth = (props) => {
-  let {snackbar, loginUser, dispatchUser, dispatchSnack } = useContext(AppContext);
+  let snackbar = useSnackbar();
+  let {login, mode, setLoginMode} = useAuth();
   let [openRegister, setOpenRegister] = useState(false);
   let [openSignIn, setOpenSignIn] = useState(false);
-  let [mode, setMode] = useState('Google');
+  let navigate = useNavigate();
 
   useEffect(() => {
     let pathname = window.location.pathname;
-    setMode((pathname.startsWith('/dev')) ? 'dev' : 'Google');
+    setLoginMode((pathname.startsWith('/dev')) ? 'dev' : 'Google');
+    navigate("/")
   }, []);
 
   const handleGoogleLoginSuccess = (userProfile) => {
 
     Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
-        loginUser(d.user);
+        login(d.user);
+        navigate("/user")
       }
     }).catch(error => {
       console.log("Error Occurred when Sign In");
@@ -48,7 +52,8 @@ const Auth = (props) => {
   const handleLoginSuccess = (data) => {
     if (mode == 'dev') {
       setOpenSignIn(false);
-      loginUser(data);
+      login(data);
+      navigate("/user");
     }
   }
 
