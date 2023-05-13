@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import { Avatar, Box, Button, FormControl, Input, InputLabel, Checkbox,
   Typography,  FormControlLabel} from '@mui/material';
 import LockIcon from '@mui/icons-material/LockOutlined';
-import {AppContext} from '@lib/app-context';
+import {useSnackbar} from '@lib/AppContext';
 import Server from '@lib/server';
 
 const styles = {
@@ -67,9 +67,8 @@ const styles = {
 const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 const SignInForm = (props) => {
-  const { signInMode } = props;
   let [login, setLogin] = useState({email: '', password: '', remember: false, errorMsg: ''});
-  let context = useContext(AppContext); 
+  let snackbar = useSnackbar(); //Context(AppContext); 
   
   const handleInputChange = (controlName) => (event) => {
     setLogin({...login, [controlName] : event.target.value});
@@ -84,15 +83,15 @@ const SignInForm = (props) => {
     };
 
     if(!emailRegex.test(data.email)) {
-      context.snackbar("error", "Invalid email. Please, give me a valid email");
+      snackbar("error", "Invalid email. Please, give me a valid email");
       return;
     }
     Server.forgotPassword(data).then((rv) => {
       if(rv.msg == "OK") {
-        context.snackbar("success", "Please refer to your email");
+        snackbar("success", "Please refer to your email");
       }
       else {
-        context.snackbar("error", rv.reason);
+        snackbar("error", rv.reason);
       }
     });
   }
@@ -109,12 +108,12 @@ const SignInForm = (props) => {
 
     Server.login(data).then((d) => {
       if(d.msg === "OK") {
-        context.snackbar("success", "Welcome to Ajoupyterhub")
+        snackbar("success", "Welcome to Ajoupyterhub")
         // console.log(d.user)
         props.onUserSignIn(d.user);
       }
       else {
-        context.snackbar("error", d.msg);
+        snackbar("error", d.msg);
       }
     });
   }

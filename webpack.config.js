@@ -10,6 +10,9 @@ const config = {
         path: path.resolve(__dirname,  'server/public/static') ,
         filename: '[name].bundle.[fullhash].js', // 'ajoupyterhubv2.js',
     },
+
+    devtool: 'eval-cheap-source-map',
+    
     plugins: [
       
       new HtmlWebpackPlugin({

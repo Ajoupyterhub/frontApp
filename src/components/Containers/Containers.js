@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Grid, Box } from '@mui/material';
-import { AppContext } from '@lib/app-context';
+import { currentUser} from '@lib/AppContext';
 import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
 import Server from '@lib/server';
 import Posts from '@components/Posts';
+import HelpMeMessage from '@components/SlackApi/HelpMe';
 
 
 const styles = {
@@ -23,7 +24,6 @@ const styles = {
     width: '100%',
     display : 'flex',
     justifyContent : 'space-around',
-    //alignItems : 'center',
   },
 
   images : {
@@ -38,8 +38,9 @@ const styles = {
 
 
 const Containers = (props) => {
-  let context = useContext(AppContext);
-  const { user } = context; //props;
+  //let context = useContext(AppContext);
+  //const { user } = context; //props;
+  const user = currentUser();
 
   let [containerList, setContainerList] = useState([]);
   let [runnings, setRunnings] = useState([]);
@@ -77,7 +78,8 @@ const Containers = (props) => {
         }
       </Grid>
       <Box sx={styles.techPosts}>
-        <Posts title="기술 관련 게시글" tag="기술" width="100%"/>
+        <Posts title="기술 관련 게시글" tag="기술" width="70%"/>
+        <HelpMeMessage />
       </Box>
       <Box sx={styles.images}>
         <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit : 'scale-down'}}/>

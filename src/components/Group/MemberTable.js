@@ -5,14 +5,13 @@ import {
   Typography, Checkbox, Menu, MenuItem
 } from '@mui/material';
 import { CustomTableCell, CustomTableRow } from '@components/CustomTable';
-import {
-  PersonAddOutlined, Close, MoreVertOutlined, RemoveCircleOutline,
+import { PersonAddOutlined, Close, MoreVertOutlined, RemoveCircleOutline,
 } from '@mui/icons-material';
 import AddMembersDlg from '@components/Group/AddMembersDlg';
 import ConfirmDialog from '@components/ConfirmDialog';
 import Server from '@lib/server';
 import config from '@lib/config';
-import { AppContext } from '@lib/app-context';
+import { useSnackbar } from '@lib/AppContext';
 
 const styles = {
   title_paper: {
@@ -95,7 +94,7 @@ const MemberTable = (props) => {
     rowsPerPage: 10,
   });
 
-  let context = useContext(AppContext);
+  let snackbar = useSnackbar();
 
   const syncMembers = () => {
     Server.getMembersByGroupID(props.group.groupID).then((d) => {
@@ -163,7 +162,7 @@ const MemberTable = (props) => {
     }
 
     if (failed.length > 0) {
-      context.snackbar("error", "역할 변경에 실패했습니다. " + failed.join(', '));
+      snackbar("error", "역할 변경에 실패했습니다. " + failed.join(', '));
       return;
     }
     let role = (m.role == 'U') ? 'S' : 'U';
@@ -173,7 +172,7 @@ const MemberTable = (props) => {
       console.log(failed);
       if (failed.length > 0) {
         if (failed.findIndex((f) => f == user) > -1) {
-          context.snackbar("error", "역할 변경에 실패했습니다. " + failed.join(', '));
+          snackbar("error", "역할 변경에 실패했습니다. " + failed.join(', '));
           return;
         }
       }

@@ -243,7 +243,6 @@ const Server = {
       await fetch(url).then(r => r.json()).then(r => { data = r.result.data; });
 
       return data?.posts?.edges?.map(({ node: { frontmatter } }) => {
-        console.log(frontmatter)
         let date = frontmatter.date.split('T')[0]; //frontmatter.slug.match(/\d*$/)[0].split('');
         if (date?.length === 0) date = '0'.repeat(6).split('');
         return {

@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import { Box, FormControl, Input, InputLabel, Checkbox, 
   Typography, FormControlLabel, FormLabel, RadioGroup, Radio
 } from '@mui/material';
-import {AppContext} from '@lib/app-context';
+import {useSnackbar} from '@lib/AppContext';
 import Server from '@lib/server';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
 
@@ -41,7 +41,7 @@ const styles = {
 }
 
 const RegisterForm = (props) => {
-  const context = useContext(AppContext);
+  const snackbar = useSnackbar();
   let [registerData, setRegisterData] = useState(
     {academicID: '', 
      dept: '', 
@@ -97,8 +97,7 @@ const RegisterForm = (props) => {
   }
 
   const handleRegisterBtn = (res) => {
-    
-    //setRegisterData({...registerData, errorMsg: ''});
+
     let data = {}
     data["academicID"] = registerData.academicID;
     data["dept"] = registerData.dept;
@@ -108,16 +107,17 @@ const RegisterForm = (props) => {
     data["picture"] = res.picture; //getImageUrl();
     data["loginType"] = "Google";
     console.log(data)
+
     Server.registerUser(data).then((d) => {
       if(d.msg != "OK")
-        context.snackbar("error", d.msg);
+        snackbar("error", d.msg);
       else {
-        context.snackbar("success", "회원 가입이 완료되었습니다.");
+        snackbar("success", "회원 가입이 완료되었습니다.");
         //props.onMoveTab(0);   
       }
     }).catch(e => {
       console.log("Server.registerUser Error", e);
-      context.snackbar("error", "Server.registerUser Error")
+      snackbar("error", "Server.registerUser Error")
     });
     return;
   }

@@ -3,7 +3,7 @@ import {  Tabs, Tab } from '@mui/material';
 import {  Group, ListAlt } from '@mui/icons-material';
 import Containers from '@components/Containers/Containers';
 import GroupList from '@components/Group/GroupList';
-import { AppContext } from '@lib/app-context';
+import { currentUser } from '@lib/AppContext';
 
 const styles = {
   root: {
@@ -49,7 +49,8 @@ const styles = {
 
 const MyPage = (props) => {
   let [currentTab, setCurrentTab] = useState(0);
-  let {user} = useContext(AppContext);
+  let user = currentUser();
+  //let {currentUser} = useContext(UserContext);
 
   const handleTabChange = (e, newTab) => {
       setCurrentTab(newTab);

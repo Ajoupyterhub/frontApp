@@ -1,7 +1,7 @@
 
 import React, {useContext, useState, useEffect} from 'react';
 import { AppBar, Toolbar, Typography, Box, IconButton, Popover} from '@mui/material';
-import {AppContext} from '@lib/app-context';
+import {currentUser} from '@lib/AppContext';
 import Profile from './Profile';
 import Auth from './Auth';
 
@@ -32,7 +32,7 @@ const styles = {
   };
   
 const Header = (props) => {
-    let {user} = useContext(AppContext);
+    let user = currentUser(); //useContext(AppContext);
 
     return (
       <AppBar sx={styles.top} id = "__header__">

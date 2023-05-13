@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Box, Chip, Paper, Typography } from '@mui/material';
 import {Chart} from 'react-google-charts';
 import { styled } from '@mui/material/styles';
-import {AppContext} from '@lib/app-context';
+import {currentUser, UIContext} from '@lib/AppContext';
 
 const styles = {
   root: {
@@ -63,7 +63,8 @@ const colorMap = {
 }
 
 const AccessLog = (props) => {
-  let {user} = useContext(AppContext);
+  //let {user} = useContext(AppContext);
+  const user = currentUser();
 
   const datetimeTotext = (datetime) => {
     let date = new Date(datetime);
@@ -91,7 +92,9 @@ const AccessLog = (props) => {
 }
 
 const Usage = (props) => {
-  let context = useContext(AppContext);
+  const user = currentUser();
+
+  const {allUsage} = useContext(UIContext); 
 
   const options = {
     title: "", //컨테이너 사용현황",
@@ -108,7 +111,7 @@ const Usage = (props) => {
         <Heading variant='h5' color='black'> 컨테이너 사용 현황</Heading>
         <Chart 
             chartType="PieChart"
-            data={context.user.usageStat}
+            data={user.usageStat}
             options={options}
             style = {styles.chart}
             />
@@ -117,7 +120,8 @@ const Usage = (props) => {
         <Heading variant='h5' color='black'> 전체 사용자 현황</Heading>
         <Chart 
             chartType="PieChart"
-            data={context.allUsage}
+            /* data={context.allUsage} */
+            data={allUsage}
             options={options}
             style = {styles.chart}
             />

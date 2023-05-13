@@ -108,10 +108,10 @@ app.post('/user/:userID/notebook', (req, res) => {
   console.log(data);
   if (data.action == 'start') {
     containers[data.kind].status = 'running';
-    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) // was status : 'OK'
+    setTimeout(() => {res.json({status : "OK", passcode : '12345678' })}, 3000) 
   } else {
     containers[data.kind].status = null;
-    res.json({status : "OK"})   // was status : 'OK'
+    setTimeout(() => {res.json({status : "OK"})}, 3000)   
   }
 })
 
@@ -237,6 +237,16 @@ app.get('/stat/all-usage-stat', (req, res) => {
       ["tensorflow", 17]
     ]
   })
+})
+
+app.post('/user/:userId/send', (req, res) => {
+  /* curl -X POST -H 'Content-type: application/json' 
+     --data '{"text":"Hello, World!"}' 
+     https://hooks.slack.com/services/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 */
+
+  axios.post('https://hooks.slack.com/services/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', 
+    { text : `[${req.params.userId}] ${req.body.text}`}).then(r => console.log(r.data));
+  res.sendStatus(200);
 })
 
 app.get('/notice', (req, res) => {

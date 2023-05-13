@@ -1,12 +1,15 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google'
-import { AppContext } from '@lib/app-context';
+import { useSnackbar, useAuth } from '@lib/AppContext';
 import { Button, IconButton } from '@mui/material';
 import GoogleConfig from '@lib/authSecret';
 import Server from '@lib/server';
 
 const GoogleSignInBtn = (props) => {
-  let context = useContext(AppContext);
+  let snackbar = useSnackbar();
+  let {login} = useAuth(); 
+  let navigate = useNavigate();
 
   /*  For credentialResponse, use the following.
         const base64Payload = credentials.credential.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
@@ -19,13 +22,14 @@ const GoogleSignInBtn = (props) => {
 
     Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
-        context.loginUser(d.user);
+        login(d.user);
+        navigate("/user", {replace : true});
       }
     }).catch(error => {
       console.log("Error Occurred when Sign In");
       console.log(error);
       if (error.startsWith('popup'))
-        context.snackbar("warning", 'login이 취소되었습니다.');
+        snackbar("warning", 'login이 취소되었습니다.');
     });
 
     return;
@@ -38,21 +42,21 @@ const GoogleSignInBtn = (props) => {
         const data = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
           { headers: { Authorization: `Bearer ${tokenResp.access_token}` } })
           .then(r => { return r.json() }).catch(e => {
-            context.snackbar('error', "Error가 발생하였습니다.")
+            snackbar('error', "Error가 발생하였습니다.")
             console.log(e);
           });
 
         handleGoogleLoginSuccess(data);
-        context.snackbar('success', 'Welcome to Ajoupyterhub');
+        snackbar('success', 'Welcome to Ajoupyterhub');
       },
 
       onError: e => {
         console.log(e);
         if (e.startsWith('popup')) {
-          context.snackbar('warning', '로그인이 취소되었습니다.');
+          snackbar('warning', '로그인이 취소되었습니다.');
           return;
         }
-        context.snackbar('error', '로그인 과정에 에러가 발생했습니다.');
+        snackbar('error', '로그인 과정에 에러가 발생했습니다.');
       },
       hosted_domain: GoogleConfig.hosted_domain, //'ajou.ac.kr', 
       prompt: 'select_account',
