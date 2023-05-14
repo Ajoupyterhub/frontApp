@@ -55,9 +55,9 @@ const styles = {
 };
 
 const GroupList = (props) => {
+  /*
   let [state, setState] = useState({
     userID: props.userID,
-    currentGroupID: 0,
     currentGroup: null,
     groupList: [],
     elMoreActions: null,
@@ -68,8 +68,15 @@ const GroupList = (props) => {
     groupPageTitle: "Add a New Group",
     groupPageTitleText: "새로운 그룹(클래스)를 만듭니다.",
   });
-
+*/
   let [groupList, setGroupList] = useState([]);
+  let [currentGroup, setCurrentGroup] = useState(null);
+  let [menu, setMenu] = useState({el : null, open : false});
+  let [groupPage, setGroupPage] = useState({
+    open : false, 
+    title : 'Add a New Group', 
+    text : "새로운 그룹(클래스)를 만듭니다."});
+  let [ page, setPage] = useState("group");
 
   const groupListColumns = [
     { displayName: "교과목", key: "name" },
@@ -82,77 +89,112 @@ const GroupList = (props) => {
   let snackbar = useSnackbar();
 
 
-  const handleMoreBtnClick = (btnId) => () => {
-    console.log(btnId + ' Clicked')
-    setState({ ...state, bOpenGroupPage: false, openMoreActions: true, elMoreActions: document.getElementById(btnId) });
+  const handleMoreBtnClick = (btnId) => (e) => {
+    //console.log(btnId + ' Clicked')
+    //setState({ ...state, bOpenGroupPage: false, openMoreActions: true, elMoreActions: document.getElementById(btnId) });
+    e.preventDefault();
+    console.log(e)
+    let grpId = btnId.split('-')[2];
+    console.log(grpId, groupList, currentGroup);
+    let currentGroup = (groupList) ? groupList.find((g) => g.groupID == grpId) : null;
+    if (currentGroup == null) {
+      //setState({ ...state, openMoreActions: false, elMoreActions: null, currentGroup });
+      setMenu({open : false, el : null});
+      console.log('current Group is null')
+      return;
+    }
+    setCurrentGroup(currentGroup);
+    setGroupPage({open : false});
+    setMenu({open : true, el : document.getElementById(btnId)});
   }
 
   const handleCloseMoreActions = (action) => (e) => {
-    let grpId = state.elMoreActions.id.split('-')[2];
+    //let grpId = state.elMoreActions.id.split('-')[2];
+    e.preventDefault();
+    let grpId = menu.el.id.split('-')[2];
     let currentGroup = (groupList) ? groupList.find((g) => g.groupID == grpId) : null;
     if (currentGroup == null) {
-      setState({ ...state, openMoreActions: false, elMoreActions: null, currentGroup });
+      //setState({ ...state, openMoreActions: false, elMoreActions: null, currentGroup });
+      setMenu({open : false, el : null});
       console.log('current Group is null')
       return;
     }
 
-    let newState = { ...state };
+    //let newState = { ...state };
 
     switch (action) {
       case 0:
         break;
       case 1:
-        newState = {
+        /* newState = {
           ...state,
           currentGroup, bOpenGroupPage: true,
           groupPageTitle: currentGroup.name,
           groupPageTitleText: "그룹 정보를 변경합니다."
-        };
+        };*/
+        setCurrentGroup(currentGroup);
+        setGroupPage({open : true, title : currentGroup.name, text : "그룹 정보를 변경합니다."});
         break;
       case 2:
-        newState = { ...state, currentGroup, bShowGroupList: false, bShowMemberList: true };
+        //newState = { ...state, currentGroup, bShowGroupList: false, bShowMemberList: true };
+        setCurrentGroup(currentGroup);
+        setPage("member");
         break;
       case 3:
         console.log("삭제");
         break;
     }
-    setState({ ...newState, openMoreActions: false, elMoreActions: null });
+    setMenu({open : false, el : null});
+    //setState({ ...newState, openMoreActions: false, elMoreActions: null });
   }
 
   const handleMemberListClose = () => {
-    setState({ ...state, bShowMemberList: false, bShowGroupList: true, currentGroup: null });
+    //setState({ ...state, bShowMemberList: false, bShowGroupList: true, currentGroup: null });
+    setPage("group");
+    setCurrentGroup(null);
   }
 
   useEffect(() => {
     let userID = (user) ? user.email.split('@')[0] : '';
-    setState({ ...state, userID });
+    //setState({ ...state, userID });
     Server.getGroupListByUserID(userID)
-      .then((groupList) => {
-        groupList.map((grp) => {
+      .then((groups) => {
+        groups.forEach((grp) => {
           const btnId = `btn-moreActions-${grp.groupID}`;
-          grp['menu'] = <MenuButton id={btnId} />
+          grp['menu'] = <IconButton id={btnId}
+                          onClick={handleMoreBtnClick(btnId)}
+                          disabled={false /*userID !== grp.owner*/}>
+                          <MoreVertOutlined size="sm" />
+                        </IconButton>; /* <MenuButton id={btnId} onClick={handleMoreBtnClick}/>*/
         });
-        setGroupList(groupList)
+        setGroupList([...groups])
+        console.log(groups)
       });
   }, []);
 
   const openGroupPage = () => {
+    /*
     setState({
       ...state,
       bOpenGroupPage: true,
       groupPageTitle: "Add a New Group",
       groupPageTitleText: "새로운 그룹(클래스)를 만듭니다."
     });
+    */
+    console.log(groupList)
+    setGroupPage({open : true, title : "Add a New Group", text : "새로운 그룹(클래스)를 만듭니다."})
   }
 
   const onCloseGroupPage = (bOK) => (d) => {
     if (!bOK) {
-      setState({ ...state, bOpenGroupPage: false, currentGroup: null, });
+      //setState({ ...state, bOpenGroupPage: false, currentGroup: null, });
+      setGroupPage({open : false});
+      setCurrentGroup(null);
       return;
     }
     //let groupList = state.groupList;
     const data = {
-      //groupID : d.groupID,
+      groupID : d.groupID,
       name: `${d.courseName}`,
       owner: d.owner || user.id,
       ownerEmail: d.ownerEmail || user.email, /// 조교가 수정할 경우도 고려해야 함. Backend에서 고려하고 있음.
@@ -163,8 +205,8 @@ const GroupList = (props) => {
       dept: d.dept,
       memoryLimit: d.memoryLimit,
     }
-    if (state.currentGroup) {
-      Server.updateGroup(state.currentGroup.groupID, data).then((res) => {
+    if (/*state.*/currentGroup) {
+      Server.updateGroup(/*state.*/currentGroup.groupID, data).then((res) => {
         if (res.msg == "OK") {
           let grp = groupList.find((g) => g.groupID == d.groupID);
           grp.name = data.name;
@@ -172,8 +214,9 @@ const GroupList = (props) => {
           grp.kind = data.kind;
           grp.dept = data.dept;
           grp.memoryLimit = data.memoryLimit;
-          setGroupList(groupList);
-          setState({ ...state, bOpenGroupPage: false });
+          setGroupList([...groupList, grp]);
+          //setState({ ...state, bOpenGroupPage: false });
+          setGroupPage({open : false});
           snackbar("success", "그룹 정보를 변경하였습니다.")
         }
         else {
@@ -184,9 +227,9 @@ const GroupList = (props) => {
     else {
       Server.addGroup(data).then((res) => {
         if (res.msg == "OK") {
-          //const btnId = `btn-moreActions-${res.groupID}`;
-          let list = [...groupList];
-          list.push({
+          const btnId = `btn-moreActions-${res.groupID}`;
+          //let list = [...groupList];
+          let grp = {
             groupID: res.groupID,
             name: data.name,
             kind: data.kind,
@@ -195,29 +238,29 @@ const GroupList = (props) => {
             ownerEmail: data.ownerEmail,
             ownerName: data.ownerName,
             classSchedule: data.classSchedule,
-            menu: <MenuButton id={`btn-moreActions-${res.groupID}`} />,
-          });
-          setState({ ...state, bOpenGroupPage: false });
-          setGroupList(list);
+            menu: <IconButton id={btnId}
+                    onClick={handleMoreBtnClick(btnId)}
+                    disabled={false /*userID !== grp.owner*/}>
+                    <MoreVertOutlined size="sm" />
+                  </IconButton>,
+          };
+          //setState({ ...state, bOpenGroupPage: false });
+          setGroupPage({open : false});
+          setGroupList([...groupList, grp]);
         }
       });
     }
   }
 
-  const MenuButton = (props) => {
+ /* const MenuButton = (props) => {
     return (
-      <IconButton id={props.id}
-        onClick={handleMoreBtnClick(props.id)}
-        disabled={false /*userID !== grp.owner*/}>
-        <MoreVertOutlined size="sm" />
-      </IconButton>
     )
-  }
+  } */
 
   return (
     <React.Fragment>
       <Paper sx={styles.root}>
-        {state.bShowGroupList && groupList && groupList.length > 0 &&
+        {page == "group" && groupList && groupList.length > 0 &&
           < Box sx={styles.paper} >
             <CustomTable sx={styles.table}
               columns={groupListColumns}
@@ -231,22 +274,24 @@ const GroupList = (props) => {
           </Box>
         }
 
-        {state.bShowMemberList &&
-          <MemberPage group={state.currentGroup} open={state.bShowMemberList}
+        {page == "member" /* state.bShowMemberList */ && currentGroup &&
+          <MemberPage group={/*state.*/currentGroup} 
+            open={page == "member"/*state.bShowMemberList*/}
             onClose={handleMemberListClose}
-            title={state.currentGroup.name + '의 사용자 목록'} />}
+            title={/*state.*/currentGroup.name + '의 사용자 목록'} />
+        }
 
-        <GroupPage user={state.userID}
-          open={state.bOpenGroupPage}
+        <GroupPage /* user={user.id} */
+          open={groupPage.open /*state.bOpenGroupPage*/}
           onClose={onCloseGroupPage}
-          group={state.currentGroup}
-          title={state.groupPageTitle}
-          titleText={state.groupPageTitleText} />
+          group={/*state.*/currentGroup}
+          title={groupPage.title /*state.groupPageTitle*/}
+          titleText={groupPage.text /*state.groupPageTitleText*/} />
         <Menu
           id="simple-menu"
-          anchorEl={state.elMoreActions}
+          anchorEl={menu.el /*state.elMoreActions*/}
           keepMounted
-          open={state.openMoreActions}
+          open={menu.open /*state.openMoreActions*/}
           onClose={handleCloseMoreActions(0)}
         >
           <MenuItem onClick={handleCloseMoreActions(1)}>그룹정보 변경</MenuItem>
