@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import {
   Button, Dialog, DialogContent, DialogTitle, DialogContentText,
-  FormControl, FormControlLabel, InputLabel, Input, FormLabel,
-  MenuItem, RadioGroup, Radio,
-  Typography, Slider, Select,
+  FormControl, InputLabel, Input,
 } from '@mui/material';
-import config from '@lib/config';
+//import config from '@lib/config';
 
 const styles = {
   root: {
@@ -14,35 +12,14 @@ const styles = {
   },
 };
 
-const marks = [
-  {
-    value: 1,
-    label: '1GB',
-  },
-  {
-    value: 1.5,
-    label: '1.5GB',
-  },
-  {
-    value: 2,
-    label: '2GB',
-  },
-  {
-    value: 2.5,
-    label: '2.5GB',
-  },
-  {
-    value: 3,
-    label: '3GB',
-  },
-  {
-    value: 3.5,
-    label: '3.5GB',
-  },
-  {
-    value: 4,
-    label: '4GB',
-  },
+const marks = [ 
+  { value: 1, label: '1GB' },
+  { value: 1.5, label: '1.5GB' },
+  { value: 2, label: '2GB' },
+  { value: 2.5, label: '2.5GB' },
+  { value: 3, label: '3GB' },
+  { value: 3.5, label: '3.5GB' },
+  { value: 4, label: '4GB' },
 ];
 
 
@@ -79,12 +56,11 @@ const GroupPage = (props) => {
 
     let data = {
       groupID: group && group.groupID || null,
-      classSchedule: formdata.get('classSchedule'),
-      courseName: formdata.get('courseName'),
-      courseID: formdata.get('courseID'),
-      dept: formdata.get('dept'),
-      kind: formdata.get('kind'),
-      memoryLimit: state.memoryLimit,
+      classSchedule: formdata.get('classSchedule') || group.classSchedule,
+      name: formdata.get('courseName') || group.name,
+      courseID: formdata.get('courseID') || group.groupID,
+      dept: formdata.get('dept') || group.dept,
+      kind: formdata.get('kind') || group.kind,
     }
 
     props.onClose(true)(data);
