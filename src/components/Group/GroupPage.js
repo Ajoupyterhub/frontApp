@@ -81,7 +81,7 @@ const GroupPage = (props) => {
           <form style={{ padding: '8px' }} onSubmit={handleUpdateGroupBtn}> 
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="courseName">교과목 이름 </InputLabel>
-              <Input id="courseName" name="courseName" defaultValue={(group && group.name)} />
+              <Input id="courseName" name="courseName" defaultValue={group?.name} />
             </FormControl>
             {/* 
             <FormControl margin="normal" required fullwidth>
@@ -91,12 +91,12 @@ const GroupPage = (props) => {
             */}
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="classSchedule">수업 일정 (예: 수금B, 화B금C)</InputLabel>
-              <Input id="classSchedule" name="classSchedule" defaultValue="" />
+              <Input id="classSchedule" name="classSchedule" defaultValue={group?.classSchedule} />
             </FormControl>
 
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="dept">학과</InputLabel>
-              <Input id="dept" name="dept" defaultValue="SW학과" />
+              <Input id="dept" name="dept" defaultValue={group?.dept}/>
             </FormControl>
 
             {/*
