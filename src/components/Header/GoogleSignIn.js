@@ -18,6 +18,9 @@ const GoogleSignInBtn = (props) => {
         login(d.user);
         navigate("/user", { replace: true });
       }
+      else {
+        console.log(`${d.user} : ${d.msg}`);
+      }
     }).catch(error => {
       console.log("Error Occurred when Sign In");
       console.log(error);

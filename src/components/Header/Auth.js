@@ -31,24 +31,6 @@ const Auth = (props) => {
     navigate("/")
   }, []);
 
-  const handleGoogleLoginSuccess = (userProfile) => {
-
-    Server.googleLogin(userProfile).then((d) => {
-      if (d.msg === "OK") {
-        login(d.user);
-        navigate("/user")
-      }
-    }).catch(error => {
-      console.log("Error Occurred when Sign In");
-      console.log(error);
-      if (error.startsWith('popup'))
-        snackbar("warning", 'login이 취소되었습니다.');
-    });
-
-    return;
-  }
-
-
   const handleLoginSuccess = (data) => {
     if (mode == 'dev') {
       setOpenSignIn(false);
@@ -62,8 +44,7 @@ const Auth = (props) => {
       <Box sx={styles.appTitle}>
         <Typography variant="h6" color="primary"> 로그인 </Typography>
         {(mode == 'Google') ?
-          <GoogleSignInBtn icon={<Login id="btn_signin" />}
-            onSuccess={handleGoogleLoginSuccess} />
+          <GoogleSignInBtn icon={<Login id="btn_signin" />} />
           :
           <IconButton onClick={() => { setOpenSignIn(true) }}>
             <Login id="btn_signin" />

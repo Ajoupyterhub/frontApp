@@ -124,7 +124,7 @@ const ContainerPlayer = (props) => {
         setStatus(null);
         return;
       }
-      let urlSuffix = (container.kind == 'term') ? '' : `?token=${passcode}`
+      let urlSuffix = (container.kind == 'code') ? '' : `?token=${passcode}`
 
       let url = (container.kind == 'code') ?
         `/code/${user.id}/${linkhash}/` :
