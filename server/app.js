@@ -34,9 +34,9 @@ app.post('/login', (req, res) => {
     msg: "OK",
     user: {
       id: "jyc",
-      name: "훈남",
-      dept: "CIA",
-      email: "jyc@jclab.org",
+      name: "너훈남",
+      dept: "GoG",
+      email: "jyc@ajousw.kr",
       status: "OK",
       primary_role: "O",
       imageUrl: "https://lh3.googleusercontent.com/a-/AOh14GjZgcI_rLJUYPRn3pigCRzEths4_KAfl08-DfgYag=s96-c",

@@ -2,6 +2,7 @@ import React, {useRef, useState} from 'react';
 import { Avatar, Typography, Box, Popover, Button, IconButton, snackbarClasses } from '@mui/material';
 import { HelpOutlined } from '@mui/icons-material';
 import { useConfirm, useSnackbar } from '@lib/AppContext';
+import Server from '@lib/server';
 
 const style = {
 
@@ -36,8 +37,8 @@ const MyProfile = (props) => {
   const inputRef = useRef(null);
   const getConfirm = useConfirm();
   const snackbar = useSnackbar();
-  //const [keyFile, setKeyFile] = useState(null);
-  
+  const [stateFileInput, setStateFileInput] = useState(0); // 0: Not clicked, 1: Clicked FileInput Open
+
   const handleFileChange = (e) => {
     if (!e.target.files) {
       console.log("잘못된 파일이거나, 파일 선택을 취소하였습니다.")
@@ -65,10 +66,7 @@ const MyProfile = (props) => {
     const data = new FormData();
     data.append('ssh-key', e.target.files[0])
 
-    fetch(`/user/${user.id}/auth/ssh-key`, {
-      method : 'POST',
-      body : data,
-    }).then(r => r.json()).then((d) => {
+    Server.addSSHKey(user.id, data).then((d) => {
       if(d.msg == "OK") {
         console.log("성공");
         snackbar("success", "SSH Key가 성공적으로 등록되었습니다.")
@@ -89,9 +87,7 @@ const MyProfile = (props) => {
       "지금까지 저장한 모든 SSH Key가 삭제되고, 필요한 Key만 설정됩니다. \
       \n 계속 진행할까요?").then((d) =>{
         if(d) {
-          fetch(`/user/${user.id}/auth/ssh-key`, {
-            method : 'PUT',
-          }).then(r => r.json()).then(d => {
+          Server.initSSHKey(user.id).then(d => {
             console.log("SSH Key 초기화");
             snackbar("warning", "SSH Key가 초기화 되었습니다.")
           })
@@ -101,6 +97,18 @@ const MyProfile = (props) => {
       }).finally(() => {
         props.onClose();
       })
+  }
+
+  const handleFocusFileInput = () => {
+    if(stateFileInput == 0) {
+      setStateFileInput(1);
+      return
+    }
+    if(stateFileInput == 1) {
+      setStateFileInput(0);
+      props.onClose();
+      return
+    }
   }
 
   return (
@@ -126,12 +134,14 @@ const MyProfile = (props) => {
         </Box>
         <Box sx={style.myprofile} >
           <Typography align="center" variant="body2"> VS Code로 원격 접속하기 위한 SSH Key를 등록합니다. </Typography>
+          <a href="http://ajoupyterhub.github.io/SSH-Key-Register-230516" target="ajoupyterhub_blog">
           <IconButton title="자세히 알려주세요">
             <HelpOutlined size="sm"/>
           </IconButton>
+          </a>
           {/* <Typography align="center" variant="body2"> 자세히 알려주세요. </Typography> */}
           {/* MUI style : Button의 component="label" 설정으로 onClick 이벤트가 <input/>으로 전달됨*/}
-          <Button sx={style.button} component="label" variant="outlined"> 
+          <Button sx={style.button} component="label" onFocus={handleFocusFileInput}> 
              SSH Key 등록하기 
             <input hidden type="file" name="ssh-key" accept=".pub" onChange={handleFileChange}/>
           </Button>

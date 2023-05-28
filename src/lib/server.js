@@ -272,6 +272,7 @@ const Server = {
     })(url);
   },
 
+  /*
   getAccessLog: function (userID) {
     return fetch(`/user/${userID}/access-log`).then(r => r.json());
   },
@@ -279,10 +280,24 @@ const Server = {
   getUsage: function (userID) {
     return fetch(`/user/${userID}/usage-statistics`).then(r => r.json());
   },
+  */
 
   getAllUsage: function () {
     return fetch('/stat/all-usage-stat').then(r => r.json());
-  }
+  },
+
+  initSSHKey : function (userID) {
+    return fetch(`/user/${userID}/auth/ssh-key`, {
+      method : 'PUT',
+    }).then(r => r.json())
+  },
+
+  addSSHKey: function (userID, data) {
+    return fetch(`/user/${userID}/auth/ssh-key`, {
+      method : 'POST',
+      body : data,
+    }).then(r => r.json())
+  },
 };
 
 export default Server;
