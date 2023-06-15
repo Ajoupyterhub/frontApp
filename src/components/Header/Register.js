@@ -111,18 +111,28 @@ const RegisterForm = (props) => {
     console.log(data)
 
     Server.registerUser(data).then((d) => {
-      if (d.msg != "OK")
+      if (d.msg != "OK") {
+        console.log(d.msg);
         snackbar("error", d.msg);
+      }
       else {
         snackbar("success", "회원 가입이 완료되었습니다.");
       }
     }).catch(e => {
       console.log("Server.registerUser Error", e);
       snackbar("error", "Server.registerUser Error")
+      setErrorMsg(e);
     });
+    props.onClose();
     return;
   }
 
+  const handleRegisterFailed = (msg, level='error') => {
+    console.log(`Register Failed: ${msg}`);
+    snackbar(level, msg);
+    props.onClose();
+  }
+  
   return (
     <React.Fragment>
       <Box sx={styles.paper}>
@@ -207,7 +217,7 @@ const RegisterForm = (props) => {
               label="동의합니다." labelPlacement="end" />
           </FormControl>
           <FormControl component="fieldset" margin="normal" required fullWidth>
-            <GoogleSignInBtn onSuccess={handleRegisterBtn}
+            <GoogleSignInBtn onSuccess={handleRegisterBtn} onFailed={handleRegisterFailed}
               disabled={!verified} />
           </FormControl>
 

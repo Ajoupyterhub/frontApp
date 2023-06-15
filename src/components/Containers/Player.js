@@ -68,6 +68,9 @@ const ContainerPlayer = (props) => {
   useEffect(() => {
     Server.statusContainer(user.id, container.kind).then(d => {
       setStatus(d.status);
+      /* have to set passcode and linkhash */
+      setPasscode(d.passcode) 
+      setLinkhash(d.link_hash)
     })
   }, [props.runningContainers])
 
@@ -127,9 +130,10 @@ const ContainerPlayer = (props) => {
       let urlSuffix = (container.kind == 'code') ? '' : `?token=${passcode}`
 
       let url = (container.kind == 'code') ?
-        `/code/${user.id}/${linkhash}/` :
+        `/code/${user.id}/` : //${linkhash}/` :
         `/notebook/${user.id}/${container.kind}${urlSuffix}`;
-
+      
+      console.log(`Trying to open ${url}`);
       conWindowRef.current = window.open(url, `${user.id}_${container.kind}`);
     })
   }

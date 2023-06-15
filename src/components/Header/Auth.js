@@ -39,12 +39,44 @@ const Auth = (props) => {
     }
   }
 
+  const handleGoogleLoginSuccess = (userProfile) => {
+    Server.googleLogin(userProfile).then((d) => {
+      if (d.msg === "OK") {
+        login(d.user);
+        navigate("/user", { replace: true });
+        snackbar('success', 'Welcome to Ajoupyterhub');
+      }
+      else {
+        console.log(`${d.user} : ${d.msg}`);
+        snackbar("error", `login에 실패하였습니다. (${d.msg})`)
+      }
+    }).catch(error => {
+      console.log("Error Occurred when Sign In");
+      console.log(error);
+      if (error.startsWith('popup')) {
+        snackbar("warning", 'login이 취소되었습니다.');
+      } else {
+        snackbar("error", `login에 문제가 발생했습니다. (${error})`)
+      }
+    });
+
+    return;
+  }
+
+
+  const handleGoogleLoginFailed = (msg, level='error') => {
+    snackbar(level, msg);
+    console.log(`[${level} : ${msg}`);
+  }
+
   return (
     <GoogleOAuthProvider clientId={GoogleConfig.clientId}>
       <Box sx={styles.appTitle}>
         <Typography variant="h6" color="primary"> 로그인 </Typography>
         {(mode == 'Google') ?
-          <GoogleSignInBtn icon={<Login id="btn_signin" />} />
+          <GoogleSignInBtn icon={<Login id="btn_signin" />} 
+            onSuccess={handleGoogleLoginSuccess} 
+            onFailed={handleGoogleLoginFailed}/>
           :
           <IconButton onClick={() => { setOpenSignIn(true) }}>
             <Login id="btn_signin" />
@@ -69,7 +101,7 @@ const Auth = (props) => {
           horizontal: 'center',
         }}
       >
-        <RegisterForm />
+        <RegisterForm onClose={() => {setOpenRegister(false)}}/>
       </Popover>
       <Popover  /* Popover for id/password SignInForm */
         open={openSignIn}
