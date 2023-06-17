@@ -123,7 +123,7 @@ app.get('/user/:userID', (req, res) => {
 
     {
       status: null,
-      description: "For Deep Learning (Coming Soon ... )",
+      description: "For Deep Learning ",
       kind: "tensorflow",
       displayName: "Tensorflow Notebook",
     },

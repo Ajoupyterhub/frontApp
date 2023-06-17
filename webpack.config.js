@@ -5,6 +5,8 @@ const path = require('path');
 const config = {
   entry: {
     index: './src/index.js',
+    //home: './src/pages/Home.js',
+    //mypage: './src/pages/MyPage.js'
   },
   output: {
     path: path.resolve(__dirname, 'server/public/static'),
@@ -55,6 +57,21 @@ const config = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack'],
+      },
+      {
+        test: /\.png$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'images/[name].[ext]?[hash]',
+            }
+          },
+        ],
       },
     ]
   },

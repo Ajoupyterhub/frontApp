@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CircularProgress, IconButton, Typography } from '@mui/material';
+import {
+  Card, CardContent, CircularProgress, IconButton,
+  Typography, SvgIcon
+} from '@mui/material';
 import {
   PlayArrow, Stop, LaptopMacOutlined, FileCopyOutlined,
   VisibilityOffOutlined, VisibilityOutlined
@@ -7,6 +10,20 @@ import {
 import { green } from '@mui/material/colors';
 import { currentUser, useSnackbar, useConfirm } from '@lib/AppContext';
 import Server from '@lib/server';
+import jupyter_logo from '../../assets/images/jupyter-main-logo.svg';
+import Tensorflow_logo from "../../assets/images/Tensorflow_logo.svg";
+import VS_Code_logo from "../../assets/images/vscode_1.35_icon.svg";
+
+const Logo = (kind) => {
+  switch (kind) {
+    case "datascience":
+      return jupyter_logo;
+    case "tensorflow":
+      return Tensorflow_logo;
+    case "code":
+      return VS_Code_logo;
+  }
+}
 
 const stylesContainer = {
   buttonProgress: {
@@ -20,8 +37,8 @@ const stylesContainer = {
   card: {
     backgroundColor: '#FEFEFE',
     height: 175,
-    //maxWidth: 380,
-    minWidth: 250,
+    maxWidth: 380,
+    minWidth: 230,
   },
   actingCard: {
     borderRadius: '5px',
@@ -33,8 +50,18 @@ const stylesContainer = {
     margin: 1, //theme.spacing(1),
     position: 'relative',
   },
+  content: {
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
+  containerIcon : {
+    width: '55px', 
+    height: '55px',  
+    objectFit: 'contain'
+  },
   controls: {
     display: 'flex',
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -57,7 +84,7 @@ const ContainerPlayer = (props) => {
   let [passcodeVisibility, setVisiblePasscode] = useState(false);
   let [passcode, setPasscode] = useState(null);
   let [linkhash, setLinkhash] = useState(null);
-  let conWindowRef = useRef(null); 
+  let conWindowRef = useRef(null);
 
   let { container } = props;
 
@@ -69,7 +96,7 @@ const ContainerPlayer = (props) => {
     Server.statusContainer(user.id, container.kind).then(d => {
       setStatus(d.status);
       /* have to set passcode and linkhash */
-      setPasscode(d.passcode) 
+      setPasscode(d.passcode)
       setLinkhash(d.link_hash)
     })
   }, [props.runningContainers])
@@ -132,7 +159,7 @@ const ContainerPlayer = (props) => {
       let url = (container.kind == 'code') ?
         `/code/${user.id}/` : //${linkhash}/` :
         `/notebook/${user.id}/${container.kind}${urlSuffix}`;
-      
+
       console.log(`Trying to open ${url}`);
       conWindowRef.current = window.open(url, `${user.id}_${container.kind}`);
     })
@@ -172,13 +199,17 @@ const ContainerPlayer = (props) => {
     <React.Fragment>
       <Card sx={(status === "running") ? stylesContainer.actingCard : stylesContainer.card}>
         <div style={stylesContainer.progressWrapper}>
-          <CardContent>
-            <Typography align="center" noWrap>
-              {container.displayName}
-            </Typography>
-            <Typography align="center" noWrap>
-              {container.description}
-            </Typography>
+          <CardContent sx={stylesContainer.content}>
+            <SvgIcon sx={stylesContainer.containerIcon}
+              component={Logo(container.kind)} inheritViewBox />
+            <div>
+              <Typography align="center" noWrap>
+                {container.displayName}
+              </Typography>
+              <Typography align="center" noWrap>
+                {container.description}
+              </Typography>
+            </div>
           </CardContent>
           <div style={stylesContainer.controls}>
             <IconButton aria-label="play/pause"
