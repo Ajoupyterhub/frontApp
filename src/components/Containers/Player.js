@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import {
   PlayArrow, Stop, LaptopMacOutlined, FileCopyOutlined,
-  VisibilityOffOutlined, VisibilityOutlined
+  VisibilityOffOutlined, VisibilityOutlined, LockOpen, Lock
 } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 import { currentUser, useSnackbar, useConfirm } from '@lib/AppContext';
@@ -62,7 +62,7 @@ const stylesContainer = {
     justifyContent: 'space-around',
   },
   containerIcon : {
-    width: '115px', 
+    width: '109px', 
     height: '45px',  
     //objectFit: 'contain'
   },
@@ -231,8 +231,30 @@ const ContainerPlayer = (props) => {
               onClick={handleWindowBtnClick} disabled={status !== "running"}>
               <LaptopMacOutlined sx={stylesContainer.playIcon} />
             </IconButton>
+            { status == "running" && passcode &&
+              <>
+                <IconButton onClick={toggleClickVisibility}>
+                  {(passcodeVisibility) ? 
+                  <Lock sx={stylesContainer.playIcon}/> :
+                  <LockOpen x={stylesContainer.playIcon}/>
+                  }
+                </IconButton>
+                { passcodeVisibility && 
+                  <>
+                  <Typography align='center' variant="body2" /* style={{ paddingRight: 8 }} */ >
+                    {passcode}
+                  </Typography>
+
+                  <IconButton aria-label="copy the passcode to open jupyter notebook"
+                    onClick={() => { navigator.clipboard.writeText(passcode) }} size="small">
+                    <FileCopyOutlined sx={stylesContainer.playIcon} />
+                  </IconButton>
+                  </>
+                }
+              </>
+          }
           </div>
-          {status === "running" && passcode &&
+          {/* status === "running" && passcode &&
             <div style={stylesContainer.controls}>
               <Typography align='center' variant="body2" style={{ paddingRight: 8 }} >
                 Passcode: {(passcodeVisibility) ? passcode : "*******"}</Typography>
@@ -247,7 +269,7 @@ const ContainerPlayer = (props) => {
                 }
               </IconButton>
             </div>
-          }
+              */}
         </div>
       </Card>
     </React.Fragment>
