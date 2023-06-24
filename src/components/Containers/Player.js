@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Card, CardContent, CircularProgress, IconButton,
+  Box, Card, CardContent, CircularProgress, IconButton,
   Typography, SvgIcon
 } from '@mui/material';
 import {
@@ -29,6 +29,22 @@ const Logo = (kind) => {
   }
 }
 
+
+/*
+const Logo = (kind) => {
+  switch (kind) {
+    case "datascience":
+      return 'static/images/jupyter-main-logo.svg';
+    case "tensorflow":
+      return "static/images/Tensorflow_logo.svg";
+    case "code":
+      return "static/images/vscode_1.35_icon.svg";
+    case "mlflow":
+      return "static/images/MLflow-Logo.svg";
+  }
+}
+*/
+
 const stylesContainer = {
   buttonProgress: {
     color: green[500],
@@ -50,7 +66,7 @@ const stylesContainer = {
     height: 175,
     maxWidth: 380,
     minWidth: 230,
-    overflowY : 'scroll',
+    overflowY: 'scroll',
   },
 
   progressWrapper: {
@@ -61,9 +77,9 @@ const stylesContainer = {
     display: 'flex',
     justifyContent: 'space-around',
   },
-  containerIcon : {
-    width: '109px', 
-    height: '45px',  
+  containerIcon: {
+    width: '110px',
+    height: '45px',
     //objectFit: 'contain'
   },
   controls: {
@@ -71,7 +87,7 @@ const stylesContainer = {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     paddingLeft: 1, //theme.spacing(1),
   },
   playIcon: {
@@ -91,6 +107,7 @@ const ContainerPlayer = (props) => {
   let [passcodeVisibility, setVisiblePasscode] = useState(false);
   let [passcode, setPasscode] = useState(null);
   let [linkhash, setLinkhash] = useState(null);
+  let [message, setMessage] = useState(null);
   let conWindowRef = useRef(null);
 
   let { container } = props;
@@ -173,6 +190,11 @@ const ContainerPlayer = (props) => {
 
   const toggleClickVisibility = () => {
     setVisiblePasscode(!passcodeVisibility);
+    navigator.clipboard?.writeText(passcode)
+    if (!passcodeVisibility) {
+      setMessage("Passcode가 클립보드에 Copy 되었습니다.");
+      setTimeout(() => setMessage(null), 3500);
+    }
   }
 
   const stopContainer = () => {
@@ -207,7 +229,7 @@ const ContainerPlayer = (props) => {
         <div style={stylesContainer.progressWrapper}>
           <CardContent sx={stylesContainer.content}>
             <div>
-              <Typography sx={{fontWeight : 700}} align="center" noWrap>
+              <Typography sx={{ fontWeight: 700 }} align="center" noWrap>
                 {container.displayName}
               </Typography>
               <Typography align="center">
@@ -215,7 +237,7 @@ const ContainerPlayer = (props) => {
               </Typography>
             </div>
           </CardContent>
-          <div style={stylesContainer.controls}>
+          <Box sx={stylesContainer.controls}>
             <SvgIcon sx={stylesContainer.containerIcon}
               component={Logo(container.kind)} inheritViewBox />
             <IconButton aria-label="play/pause"
@@ -231,46 +253,36 @@ const ContainerPlayer = (props) => {
               onClick={handleWindowBtnClick} disabled={status !== "running"}>
               <LaptopMacOutlined sx={stylesContainer.playIcon} />
             </IconButton>
-            { status == "running" && passcode &&
+            {status == "running" && passcode &&
               <>
                 <IconButton onClick={toggleClickVisibility}>
-                  {(passcodeVisibility) ? 
-                  <Lock sx={stylesContainer.playIcon}/> :
-                  <LockOpen x={stylesContainer.playIcon}/>
+                  {(passcodeVisibility) ?
+                    <Lock sx={stylesContainer.playIcon} /> :
+                    <LockOpen x={stylesContainer.playIcon} />
                   }
                 </IconButton>
-                { passcodeVisibility && 
+                {passcodeVisibility &&
                   <>
-                  <Typography align='center' variant="body2" /* style={{ paddingRight: 8 }} */ >
-                    {passcode}
-                  </Typography>
-
+                    <Typography align='center' variant="body2" /* style={{ paddingRight: 8 }} */ >
+                      {passcode}
+                    </Typography>
+                    {/* 
                   <IconButton aria-label="copy the passcode to open jupyter notebook"
                     onClick={() => { navigator.clipboard.writeText(passcode) }} size="small">
                     <FileCopyOutlined sx={stylesContainer.playIcon} />
                   </IconButton>
+                  */}
                   </>
                 }
               </>
-          }
-          </div>
-          {/* status === "running" && passcode &&
-            <div style={stylesContainer.controls}>
-              <Typography align='center' variant="body2" style={{ paddingRight: 8 }} >
-                Passcode: {(passcodeVisibility) ? passcode : "*******"}</Typography>
-              <IconButton aria-label="copy the passcode to open jupyter notebook"
-                onClick={() => { navigator.clipboard.writeText(passcode) }} size="small">
-                <FileCopyOutlined sx={stylesContainer.playIcon} />
-              </IconButton>
-              <IconButton onClick={toggleClickVisibility}>
-                {(passcodeVisibility) ?
-                  <VisibilityOffOutlined sx={stylesContainer.playIcon} /> :
-                  <VisibilityOutlined sx={stylesContainer.playIcon} />
-                }
-              </IconButton>
-            </div>
-              */}
+            }
+          </Box>
         </div>
+        {message &&
+          <Typography align='center' variant="body2" color="primary">
+            {message}
+          </Typography>
+        }
       </Card>
     </React.Fragment>
   )
