@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Box, Card, CardContent, CircularProgress, IconButton,
-  Typography, SvgIcon
+  Typography, SvgIcon, CardActions
 } from '@mui/material';
 import {
-  PlayArrow, Stop, LaptopMacOutlined, FileCopyOutlined,
-  VisibilityOffOutlined, VisibilityOutlined, LockOpen, Lock
+  PlayArrow, Stop, LaptopMacOutlined, LanguageOutlined, FileCopyOutlined, LockOpen, Lock,
 } from '@mui/icons-material';
 import { green } from '@mui/material/colors';
 import { currentUser, useSnackbar, useConfirm } from '@lib/AppContext';
@@ -14,6 +13,7 @@ import jupyter_logo from '../../assets/images/jupyter-main-logo.svg';
 import Tensorflow_logo from "../../assets/images/Tensorflow_logo.svg";
 import VS_Code_logo from "../../assets/images/vscode_1.35_icon.svg";
 import MLflow_logo from "../../assets/images/MLflow-Logo.svg";
+import pytorch_icon from "../../assets/images/pytorch-svgrepo-com.svg";
 
 
 const Logo = (kind) => {
@@ -26,24 +26,12 @@ const Logo = (kind) => {
       return VS_Code_logo;
     case "mlflow":
       return MLflow_logo;
+    case "torch":
+      return pytorch_icon;
+    default:
+      console.log(`wrong kind - ${kind}`)
   }
 }
-
-
-/*
-const Logo = (kind) => {
-  switch (kind) {
-    case "datascience":
-      return 'static/images/jupyter-main-logo.svg';
-    case "tensorflow":
-      return "static/images/Tensorflow_logo.svg";
-    case "code":
-      return "static/images/vscode_1.35_icon.svg";
-    case "mlflow":
-      return "static/images/MLflow-Logo.svg";
-  }
-}
-*/
 
 const stylesContainer = {
   buttonProgress: {
@@ -56,17 +44,21 @@ const stylesContainer = {
   },
   card: {
     backgroundColor: '#FEFEFE',
-    minHeight: 175,
+    minHeight: 178,
+    width: '30%',
     maxWidth: 380,
     minWidth: 230,
+    marginRight: 1,
   },
   actingCard: {
     borderRadius: '5px',
     border: '2px solid #4A90E2',
-    height: 175,
+    height: 178,
+    width: '30%',
     maxWidth: 380,
     minWidth: 230,
-    overflowY: 'scroll',
+    marginRight: 1,
+    //overflowY: 'scroll',
   },
 
   progressWrapper: {
@@ -78,8 +70,12 @@ const stylesContainer = {
     justifyContent: 'space-around',
   },
   containerIcon: {
-    width: '110px',
-    height: '45px',
+    width: 'auto',
+    height: '51px',
+    //position : 'absolute',
+    //bottom : 0,
+    //left: 18,
+    //zIndex : -100,
     //objectFit: 'contain'
   },
   controls: {
@@ -87,17 +83,13 @@ const stylesContainer = {
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    //justifyContent: 'center',
+    justifyContent: 'center',
     paddingLeft: 1, //theme.spacing(1),
   },
   playIcon: {
     height: 24,
     width: 24,
   },
-  jupyter: {
-    top: 0,
-    left: 0,
-  }
 };
 
 const ContainerPlayer = (props) => {
@@ -109,6 +101,7 @@ const ContainerPlayer = (props) => {
   let [linkhash, setLinkhash] = useState(null);
   let [message, setMessage] = useState(null);
   let conWindowRef = useRef(null);
+  let webWindowRef = useRef(null);
 
   let { container } = props;
 
@@ -180,11 +173,22 @@ const ContainerPlayer = (props) => {
       }
 
       let urlSuffix = (container.urlPrefix == "/notebook") ? `?token=${passcode}` : '/';
-
       let url = `${container.urlPrefix}/${user.id}/${container.kind}${urlSuffix}`
 
-      console.log(`Trying to open ${url}`);
       conWindowRef.current = window.open(url, `${user.id}_${container.kind}`);
+    })
+  }
+
+  const handleWebBtnClick = () => {
+    Server.statusWeb(user.id).then(r => {
+      let url = `/app/${user.id}/web/`
+      if(r.status == 'OK') {
+        webWindowRef.current = window.open(url, `${user.id}_web`);    
+      }
+      else {
+        setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3333)`)
+        setTimeout(() => setMessage(null), 3500);
+      }
     })
   }
 
@@ -238,9 +242,7 @@ const ContainerPlayer = (props) => {
             </div>
           </CardContent>
           <Box sx={stylesContainer.controls}>
-            <SvgIcon sx={stylesContainer.containerIcon}
-              component={Logo(container.kind)} inheritViewBox />
-            <IconButton aria-label="play/pause"
+            <IconButton aria-label="play/pause" key = "play-stop"
               onClick={handleContainerBtnClick} >
               {(status !== "running") ?
                 <PlayArrow sx={stylesContainer.playIcon} /> :
@@ -249,40 +251,47 @@ const ContainerPlayer = (props) => {
                 (<CircularProgress size={38} sx={stylesContainer.buttonProgress} />)}
             </IconButton>
 
-            <IconButton aria-label="open container or notebook"
+            <IconButton aria-label="open container or notebook" key="open-window"
               onClick={handleWindowBtnClick} disabled={status !== "running"}>
               <LaptopMacOutlined sx={stylesContainer.playIcon} />
             </IconButton>
-            {status == "running" && passcode &&
-              <>
-                <IconButton onClick={toggleClickVisibility}>
-                  {(passcodeVisibility) ?
-                    <Lock sx={stylesContainer.playIcon} /> :
-                    <LockOpen x={stylesContainer.playIcon} />
-                  }
+            {container.kind == 'code' && 
+            <>            
+              {status == "running" && passcode && 
+              (passcodeVisibility ?
+                <>
+                <IconButton onClick={toggleClickVisibility} key="passcode"> 
+                    <Lock sx={stylesContainer.playIcon} />
                 </IconButton>
-                {passcodeVisibility &&
-                  <>
-                    <Typography align='center' variant="body2" /* style={{ paddingRight: 8 }} */ >
-                      {passcode}
-                    </Typography>
-                    {/* 
-                  <IconButton aria-label="copy the passcode to open jupyter notebook"
-                    onClick={() => { navigator.clipboard.writeText(passcode) }} size="small">
-                    <FileCopyOutlined sx={stylesContainer.playIcon} />
-                  </IconButton>
-                  */}
-                  </>
-                }
-              </>
+                <Typography align='center' variant="body2" >
+                  {passcode}
+                </Typography>
+                </> 
+                :
+                <IconButton onClick={toggleClickVisibility} key="passcode-visible"> 
+                    <LockOpen sx={stylesContainer.playIcon} />
+                </IconButton>
+                )
+              }
+            
+              <IconButton aria-label="open container or notebook" key="web-open"
+                onClick={handleWebBtnClick} >
+                <LanguageOutlined sx={stylesContainer.playIcon} />
+              </IconButton>
+            </>
             }
           </Box>
         </div>
-        {message &&
-          <Typography align='center' variant="body2" color="primary">
+        <Box sx={stylesContainer.controls}>
+        {message ?
+          <Typography align='center' variant="body2" color="primary" >
             {message}
-          </Typography>
+          </Typography> :
+        
+          <SvgIcon sx={stylesContainer.containerIcon}
+            component={Logo(container.kind)}  inheritViewBox /> 
         }
+        </Box>
       </Card>
     </React.Fragment>
   )

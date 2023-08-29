@@ -12,13 +12,24 @@ app.use(express.static(__dirname + '/public'));   // html, image 등 정적파�
 var containers = {
   'code': {
     status: null,
+    passcode : '12345678',
   },
   'tensorflow': {
     status: null,
+    passcode : '12345678',
   },
   'datascience': {
     status: null,
-  }
+    passcode : '12345678',
+  },
+  'torch' : {
+    status : null,
+    passcode : '12345678',
+  },
+  'mlflow' : {
+    status : null,
+    passcode : '12345678',
+  },
 };
 
 app.get('/', (req, res) => {
@@ -105,36 +116,61 @@ app.post('/user/:userID/notebook', (req, res) => {
   console.log(data);
   if (data.action == 'start') {
     containers[data.kind].status = 'running';
-    setTimeout(() => { res.json({ status: "OK", passcode: '12345678' }) }, 3000)
+    setTimeout(() => { res.json({ status: "OK", passcode: '12345678', link_hash : '12345678' }) }, 3000)
   } else {
     containers[data.kind].status = null;
     setTimeout(() => { res.json({ status: "OK" }) }, 3000)
   }
 })
 
-app.get('/user/:userID', (req, res) => {
-  res.json([
+app.get('/user/:userID/web', (req, res) => {
+  res.json({status : 'NOK'})
+})
+
+app.get('/user/:userID/notebook', (req, res) => {
+  res.json({
+    "datascience" :
     {
       status: null,
       description: "For Python & R",
       kind: "datascience",
       displayName: "Datascience Notebook",
+      urlPrefix : '/notebook',
     },
-
+    "tensorflow" :
     {
       status: null,
       description: "For Deep Learning ",
       kind: "tensorflow",
-      displayName: "Tensorflow Notebook",
+      displayName: "Tensorflow Notebook (No GPU)",
+      urlPrefix : '/notebook',
     },
-
+    "code" :
     {
       status: null,
-      description: "VS Code",
+      description: "For Python, Java, and Node.js",
       kind: "code",
       displayName: "Visual Studio Code",
+      urlPrefix : '/app',
     },
-  ])
+    "mlflow" :
+    {
+      status: null,
+      description: "For ML experiment (MLOps)",
+      kind: "mlflow",
+      displayName: "MLFlow",
+      urlPrefix : '/app',
+    },
+    "torch" :
+    {
+      status: null,
+      description: "For PyTorch Projects",
+      kind: "torch",
+      displayName: "PyTorch Notebook (No GPU)",
+      urlPrefix : '/notebook',
+    },
+
+  })
 })
 
 app.post('/user', (req, res) => {

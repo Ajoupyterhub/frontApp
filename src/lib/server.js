@@ -110,7 +110,26 @@ const Server = {
   },
 
   getContainers: function (userID) {
-    return fetch(`/user/${userID}`).then(d => d.json());
+    return fetch(`/user/${userID}/notebook`).then(d => d.json());
+  },
+
+  statusWeb: function (userID) {
+    return fetch(`/user/${userID}/web`).then(r => r.json());
+  },
+
+  startDeploy: function (userID, port = 5000) {
+    const body = {port : port};
+    return fetch(`/user/${userID}/web`, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }).then(r => r.json());
+  },
+
+  stopDeploy: function (userID) {
+    return fetch(`/user/${userID}/web`, {
+      method : 'DELETE'
+    }).then(r => r.json())
   },
 
   registerUser: function (data) {

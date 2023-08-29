@@ -19,6 +19,7 @@ const styles = {
   accessLog: {
     width: '100%',
     //maxWidth: '350px',
+    height : '100%', //`calc(100vh - 20px)`,
     backgroundColor: '#fffde7',
     padding: 1,
     alignItems: 'center',
