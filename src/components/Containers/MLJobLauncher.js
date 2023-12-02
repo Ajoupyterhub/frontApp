@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  Box, Card, CardContent, IconButton, Typography, SvgIcon
+  Box, Button, Card, CardContent, IconButton, Typography, SvgIcon, 
+  FormControl, RadioGroup, Radio, FormControlLabel, FormLabel, Dialog,
+  DialogContent, DialogTitle
 } from '@mui/material';
 import {
   PlayArrow, Stop, LanguageOutlined, LaptopMacOutlined, RocketLaunchTwoTone,
@@ -34,7 +36,7 @@ const stylesContainer = {
     maxWidth: 380,
     minWidth: 230,
     marginRight: 1,
-    overflowY: 'scroll',
+    //overflowY: 'scroll',
   },
 
   progressWrapper: {
@@ -65,9 +67,57 @@ const stylesContainer = {
   },
 };
 
-const WebDeployer = (props) => {
+const JobSpecSetter = (props) => {
+  const user = currentUser();
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    props.onClose(false);
+  }
+
+  return (
+    <React.Fragment>
+      <Dialog
+        maxWidth="sm" 
+        open={props.open}
+        onClose={props.onClose} 
+      >
+        <DialogTitle id="dialog-title"> ML Job 설정하기 </DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleFormSubmit}>
+            <FormControl margin="normal" required fullWidth>
+              <FormLabel id="tensorflow-pytorch"> ML Library to select</FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="tensorflow-pytorch"
+                name="library"
+              >
+                <FormControlLabel value="tensorflow" control={<Radio />} label="Tensorflow" />
+                <FormControlLabel value="pytorch" control={<Radio />} label="Pytorch" />
+              </RadioGroup>
+              
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                //onClick={props.onClose}
+                sx={{ marginTop: 2 }}
+                //disabled={!slackState}
+              >
+                ML Job 설정 완료
+              </Button>
+            </FormControl>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
+  );
+}
+
+const MLJobLauncher = (props) => {
 
   let [status, setStatus] = useState(null);
+  let [openSpec, setOpenSpec] = useState(false);
   let [message, setMessage] = useState(null);
   let webWindowRef = useRef(null);
 
@@ -76,10 +126,11 @@ const WebDeployer = (props) => {
   const getConfirm = useConfirm();
 
   useEffect(() => {
-    Server.statusWeb(user.id).then(r => {
+    Server.statusJob(user.id).then(r => {
+      console.log(r);
       setStatus(r.status);
     })
-  }, [])
+  }, [user])
 
   // const handleContainerBtnClick = () => {
   //   if (status.proxy === "OK") {
@@ -109,70 +160,51 @@ const WebDeployer = (props) => {
   // }
 
   const handleWindowBtnClick = () => {
-    Server.statusWeb(user.id).then(r => {
-      let url = `/app/${user.id}/web/`
-      if(r.status == 'OK') {
-        console.log(`Trying to open ${url}`);
-        webWindowRef.current = window.open(url, `${user.id}_web`);    
+    Server.statusJob(user.id, true).then(r => {  // needs logs
+      let url = `/user/${user.id}/mljob/`
+      if(r.status !== 'AVAILABLE') {
+        console.log(r.log);
+        //webWindowRef.current = window.open(url, `${user.id}_web`);    
       }
       else {
-        setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3333)`)
+        setMessage(`ML Job log가 발견되지 않았습니다.`)
         setTimeout(() => setMessage(null), 3500);
       }
     })
   }
 
-  // const stopDeploy = () => {
-  //   if (conWindowRef.current) {
-  //     conWindowRef.current.close();
-  //     conWindowRef.current = null;
-  //   }
-
-  //   Server.stopDeploy(user.id).then(d => {
-  //     if (d.status != 'OK') {
-  //       snackbar("error", "Web 배포 해제가 실패하였습니다.")
-  //       return;
-  //     }
-  //   }).finally(() => {
-  //     setStatus(null);
-  //   });
-  // }
+  const onCloseSpec = () => {
+    setOpenSpec(false);
+  }
 
   return (
     <React.Fragment>
-      <Card sx={(status === "OK") ? stylesContainer.actingCard : stylesContainer.card}>
+      <Card sx={(status !== "AVAILABLE") ? stylesContainer.actingCard : stylesContainer.card}>
         <div style={stylesContainer.progressWrapper}>
           <CardContent sx={stylesContainer.content}>
             <div>
               <Typography sx={{ fontWeight: 700 }} align="center" noWrap>
-                Web 배포 (Deploy) 
+                ML Job 실행 (Launch) 
                 {/*container.displayName*/}
               </Typography>
               <Typography align="center">
-                실행한 web (port: 3333)을 확인합니다. {/* `http://jupyter.ajou.ac.kr/app/${user.id}/web/` */}
-                </Typography>
-                {/* <Typography align="center">
-                VS-Code에서 3333 port 번호로 Web App.을 실행하면 위의 URL로 접속할 수 있습니다. 
-                </Typography>*/}
+                기계학습 작업을 실행합니다.
+              </Typography>
+
             </div>
           </CardContent>
           <Box sx={stylesContainer.controls}>
-            {/*
-            <IconButton aria-label="play/pause"
-              onClick={handleContainerBtnClick} >
-              {(status.proxy !== "OK") ?
-                <PlayArrow sx={stylesContainer.playIcon} /> :
-                <Stop sx={stylesContainer.playIcon} />}
-              { progress &&
-                (<CircularProgress size={38} sx={stylesContainer.buttonProgress} />) }
-            </IconButton>
-            */}
-
-            <IconButton aria-label="open container or notebook"
-              onClick={handleWindowBtnClick} /* disabled={status !== "OK"} */>
-              <LanguageOutlined  sx={stylesContainer.playIcon} />
-            </IconButton>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {setOpenSpec(true)}}
+              //sx={{ }}
+              //disabled={!slackState}
+            >
+              ML Job 실행하기
+            </Button>
           </Box>
+
         </div>
         <Box sx={stylesContainer.controls}>
         {message &&
@@ -180,11 +212,11 @@ const WebDeployer = (props) => {
             {message}
           </Typography> }
           {/* <RocketLaunchTwoTone sx={stylesContainer.containerIcon} /> */}
-        
-        </Box>
+                </Box>
       </Card>
+      <JobSpecSetter open={openSpec} onClose={onCloseSpec} />
     </React.Fragment>
   )
 }
 
-export default WebDeployer;
+export default MLJobLauncher;

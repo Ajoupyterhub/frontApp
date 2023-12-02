@@ -127,6 +127,10 @@ app.get('/user/:userID/web', (req, res) => {
   res.json({status : 'NOK'})
 })
 
+app.get('/user/:userID/mljob', (req, res) => {
+  res.json({status : 'AVAILABLE', log : "This is a log"})
+})
+
 app.get('/user/:userID/notebook', (req, res) => {
   res.json({
     "datascience" :

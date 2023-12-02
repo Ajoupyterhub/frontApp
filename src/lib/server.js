@@ -117,20 +117,28 @@ const Server = {
     return fetch(`/user/${userID}/web`).then(r => r.json());
   },
 
-  startDeploy: function (userID, port = 5000) {
-    const body = {port : port};
-    return fetch(`/user/${userID}/web`, {
-      method: "POST",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    }).then(r => r.json());
+  statusJob: function (userID, log) {
+    let url = `/user/${userID}/mljob`
+    if(log) {
+      url += '?log=true';
+     }
+    return fetch(url).then(r => r.json());
   },
 
-  stopDeploy: function (userID) {
-    return fetch(`/user/${userID}/web`, {
-      method : 'DELETE'
-    }).then(r => r.json())
-  },
+  // startDeploy: function (userID) {
+  //   const body = {}; //{port : port};
+  //   return fetch(`/user/${userID}/web`, {
+  //     method: "POST",
+  //     headers: { "Accept": "application/json", "Content-Type": "application/json" },
+  //     body: JSON.stringify(body),
+  //   }).then(r => r.json());
+  // },
+
+  // stopDeploy: function (userID) {
+  //   return fetch(`/user/${userID}/web`, {
+  //     method : 'DELETE'
+  //   }).then(r => r.json())
+  // },
 
   registerUser: function (data) {
     return fetch('/user', {
@@ -227,7 +235,7 @@ const Server = {
   },
 
   getNotice: function () {
-    return fetch('/notice').then(d => d.json());
+    return fetch('/notice').then(d =>  d.json())
   },
 
   /**
@@ -243,7 +251,7 @@ const Server = {
    * @returns {object}
    */
 
-  getAllPosts: function (page = 0) {
+  getAllPosts: function (page) {
     const BLOG_URL = config.BLOG_URL
     const url = (page === 0)
       ? `${BLOG_URL}/page-data/index/page-data.json`

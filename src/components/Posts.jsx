@@ -80,7 +80,7 @@ const Posts = (props) => {
   useEffect(() => {
     (async function () {
       if (props.tag == 'all') {
-        setPosts(await Server.getAllPosts())
+        setPosts(await Server.getAllPosts(0))
       }
       else {
         setPosts(await Server.getPostsByTag(props.tag));

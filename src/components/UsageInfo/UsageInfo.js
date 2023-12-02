@@ -3,12 +3,13 @@ import { Box, Chip, Paper, Typography } from '@mui/material';
 import { Chart } from 'react-google-charts';
 import { styled } from '@mui/material/styles';
 import { currentUser, UIContext } from '@lib/AppContext';
+import HelpMeMessage from '@components/HelpMe/HelpMe';
 
 const styles = {
   root: {
     width: '300px',
     height: '100%',
-    backgroundColor: '#4a7ec9',
+    backgroundColor: '#efefef', // #4a7ec9',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
@@ -138,6 +139,7 @@ const UsageInfo = (props) => {
   return (
     <Paper sx={styles.root}>
       <AccessLog userID={props.userID} sx={styles.accessLog} />
+      <HelpMeMessage />
       <Usage userID={props.userID} sx={styles.usage} />
     </Paper>
   )

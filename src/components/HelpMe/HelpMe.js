@@ -9,8 +9,11 @@ const styles = {
     padding: '8px',
     width: '25%',
     minWidth: 250,
-    backgroundColor: 'inherit',
+    backgroundColor: '#efefef',
     height: '100%',
+    margin: 'auto',
+    marginTop : 1,
+    marginBottom: 1,
   }
 }
 const HelpMeMessage = (props) => {

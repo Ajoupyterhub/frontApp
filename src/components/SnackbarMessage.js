@@ -44,17 +44,18 @@ const Span = styled('span')({
   alignItems: 'center',
 });
 
-function SnackbarMessage({ open, onClose, variant, message }) {
+function SnackbarMessage({ open, onClose, variant, message, anchorVeritcal, anchorHorizontal, duration }) {
+
   const Icon = variantIcon[variant];
   return (
     <div>
       <Snackbar
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
+          vertical: anchorVeritcal || 'bottom',
+          horizontal: anchorHorizontal || 'right',
         }}
         open={open}
-        autoHideDuration={3000}
+        autoHideDuration= {duration || 3000}
         onClose={onClose}
       >
         <SnackbarContent

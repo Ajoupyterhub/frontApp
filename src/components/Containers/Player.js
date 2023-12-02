@@ -186,7 +186,7 @@ const ContainerPlayer = (props) => {
         webWindowRef.current = window.open(url, `${user.id}_web`);    
       }
       else {
-        setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3333)`)
+        setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3000)`)
         setTimeout(() => setMessage(null), 3500);
       }
     })
@@ -257,7 +257,7 @@ const ContainerPlayer = (props) => {
             </IconButton>
             {container.kind == 'code' && 
             <>            
-              {status == "running" && passcode && 
+              {status == 'running' && passcode && 
               (passcodeVisibility ?
                 <>
                 <IconButton onClick={toggleClickVisibility} key="passcode"> 
@@ -274,8 +274,8 @@ const ContainerPlayer = (props) => {
                 )
               }
             
-              <IconButton aria-label="open container or notebook" key="web-open"
-                onClick={handleWebBtnClick} >
+              <IconButton aria-label="open web window" key="web-open"
+                onClick={handleWebBtnClick} disabled={status !== 'running'}>
                 <LanguageOutlined sx={stylesContainer.playIcon} />
               </IconButton>
             </>

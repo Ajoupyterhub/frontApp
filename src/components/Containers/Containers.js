@@ -3,11 +3,9 @@ import { Grid, Box, Typography } from '@mui/material';
 import { currentUser } from '@lib/AppContext';
 import UsageInfo from '@components/UsageInfo/UsageInfo';
 import ContainerPlayer from './Player';
-import WebDeployer from './WebDeployer';
+import MLJobLauncher from './MLJobLauncher';
 import Server from '@lib/server';
 import Posts from '@components/Posts';
-import HelpMeMessage from '@components/HelpMe/HelpMe';
-
 
 const styles = {
   containerPaper: {
@@ -72,12 +70,12 @@ const Containers = (props) => {
 
   return (
     <div style={styles.containerPaper}>
-      <UsageInfo userID={user.id} /> 
       <Box sx={styles.rightPane}>
         <Typography variant="h6" sx={{ padding: 1 }}>
             매일 새벽 4시에 모든 컨테이너가 사용 중지 됩니다. 기계학습이 필요한 작업은 미리 알려주기 바랍니다.
         </Typography>
-        {Object.keys(containers).length > 0 && <div>
+        {Object.keys(containers).length > 0 && 
+        <div>
         <Box sx={styles.containerRow}>
             <ContainerPlayer container={containers['datascience']} runningContainers={runnings}
                 onStartContainer={kind => setRunnings([...runnings, 'datascience'])}
@@ -93,48 +91,24 @@ const Containers = (props) => {
             <ContainerPlayer container={containers['code']} runningContainers={runnings}
                 onStartContainer={kind => setRunnings([...runnings, 'code'])}
                 onStopContainer={kind => setRunnings(runnings.filter(k => k != 'code'))} />
-          {/* <WebDeployer container={containers['web']} /> */}
             <ContainerPlayer container={containers['mlflow']} runningContainers={runnings}
                 onStartContainer={kind => setRunnings([...runnings, 'mlflow'])}
                 onStopContainer={kind => setRunnings(runnings.filter(k => k != 'mlflow'))} />
+            {/* <MLJobLauncher user={user}/> */}
+
         </Box>
-        {/* <Box sx={styles.containerRow}>
-          {containers['mlflow'] && 
-            <ContainerPlayer container={containers['mlflow']} runningContainers={runnings}
-                onStartContainer={kind => setRunnings([...runnings, 'mlflow'])}
-                onStopContainer={kind => setRunnings(runnings.filter(k => k != 'mlflow'))} />
-          }
-        
-        </Box> */}
         </div>}
-        {/*}
-        <Grid
-          container
-          direction="row"
-          spacing={3}
-          justifyContent="center"
-          sx={{ padding: 1 }}
-        >
-          {Object.keys(containers).map((k) => {
-            let con = containers[k];
-            return (<Grid item xs={4} key={`${user.id}-${con.kind}`} >
-              <ContainerPlayer container={con} runningContainers={runnings}
-                onStartContainer={kind => setRunnings([...runnings, kind])}
-                onStopContainer={kind => setRunnings(runnings.filter(k => k != kind))} />
-            </Grid>)}
-            )
-          }
-        </Grid>
-        */}
+
         <Box sx={styles.techPosts}>
           <Posts title="기술 관련 게시글" tag="기술" width="70%" />
-          <HelpMeMessage />
+
         </Box>
         <Box sx={styles.images}>
-          <img src="/static/images/50th_emblem_ver02.png" style={{ width: '150px', objectFit: 'scale-down' }} />
-          <img src="/static/images/sw_college_emblem.png" style={{ height: '100px', objectFit: 'scale-down' }} />
+          <img src="/static/images/50th_emblem_ver02.png" style={{ width: '70px', objectFit: 'scale-down' }} />
+          <img src="/static/images/sw_college_emblem.png" style={{ height: '70px', objectFit: 'scale-down' }} />
         </Box>
       </Box>
+      <UsageInfo userID={user.id} /> 
     </div>
   );
 }
