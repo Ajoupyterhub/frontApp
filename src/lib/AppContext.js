@@ -16,13 +16,6 @@ const userReducer = (state, action) => {
   }
 }
 
-const loginModeReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_MODE':
-      return action.mode
-  }
-}
-
 const snackReducer = (state, action) => {
   switch (action.type) {
     case 'OPEN':
@@ -56,8 +49,8 @@ export const currentUser = () => {
 }
 
 export const useAuth = () => {
-  let { login, logout, setLoginMode, mode } = useContext(UserContext);
-  return { login, logout, setLoginMode, mode };
+  let { login, logout} = useContext(UserContext);
+  return { login, logout};
 }
 
 export const useSnackbar = () => {
@@ -76,7 +69,6 @@ const AppContext = ({ children }) => {
     { open: false, variant: 'success', message: '' })
   let [confirm, openCloseConfirm] = useReducer(confirmReducer,
     { open: false, title: '', message: '', resolve: null })
-  let [mode, loginModeDispatcher] = useReducer(loginModeReducer, 'Google');
   let [slackState, slackDispatcher] = useReducer(slackReducer, true);
 
   let usageRef = useRef(null)
@@ -93,10 +85,6 @@ const AppContext = ({ children }) => {
 
   const logout = () => {
     loginDispatcher({ type: 'LOGOUT' })
-  }
-
-  const setLoginMode = (mode) => {
-    loginModeDispatcher({ type: 'SET_MODE', mode })
   }
 
   const snackbar = (variant, message) => {
@@ -126,7 +114,7 @@ const AppContext = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user: user, login, logout, mode, setLoginMode }}>
+    <UserContext.Provider value={{ user: user, login, logout}}>
       <UIContext.Provider value={{
         snackbar, getConfirm, slackState, setSlack,
         allUsage: usageRef.current

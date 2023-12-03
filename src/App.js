@@ -29,7 +29,7 @@ const App = () => {
           <Box sx={styles.mainPage}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/dev" element={<Home />} />
+              <Route path="/dev" element={<Home mode="dev"/>} />
               <Route path="/user" element={<MyPage />} />
             </Routes>
           </Box>

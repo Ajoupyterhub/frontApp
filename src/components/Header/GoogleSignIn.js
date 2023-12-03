@@ -29,7 +29,7 @@ const GoogleSignInBtn = (props) => {
         props.onFailed('로그인 과정에 에러가 발생했습니다.');
       },
       hosted_domain: GoogleConfig.hosted_domain, 
-      //prompt: 'select_account',
+      prompt: 'select_account',
       flow: 'implicit',
       scope: 'profile email',
     });
