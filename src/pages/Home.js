@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import {Paper} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import Posts from '@components/Posts'
 import Server from '@lib/server';
@@ -38,8 +39,10 @@ const Home = (props) => {
       <div style={{display : 'flex', flexDirection : 'row'}}>
         <Banner src="/static/images/background.png" msg={urgentNotice} alt="banner" />
         { props.mode == 'dev' && 
-          <SignInForm style={{border : "2px solid blue", width: "30%"}} 
+          <Paper sx={{width : "30%", padding : 0}}>
+          <SignInForm style={{width: "100%"}} 
               onUserSignIn={handleLoginSuccess} />
+          </Paper>
         }
       </div>
       

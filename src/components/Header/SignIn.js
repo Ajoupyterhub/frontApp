@@ -14,10 +14,10 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 1,
-    marginBottom: 1,
-    marginLeft: 1,
-    marginRight: 1,
+    //marginTop: 1,
+    //marginBottom: 1,
+    //marginLeft: 1,
+    //marginRight: 1,
     padding: 1,
   },
   avatar: {
@@ -96,7 +96,7 @@ const SignInForm = (props) => {
         <Avatar sx={styles.avatar}>
           <LockIcon />
         </Avatar>
-        <Typography >아주대학교 이메일 계정으로 Login 하세요.</Typography>
+        <Typography > ID와 Password로 Login 하세요.</Typography>
         <br />
 
         <form sx={styles.form} >
@@ -113,11 +113,13 @@ const SignInForm = (props) => {
               autoComplete="current-password" onChange={handleInputChange("password")}
             />
           </FormControl>
+          {/*
           <FormControl component="fieldset" margin="normal" required fullWidth>
             <FormControlLabel style={{ margin: 'auto' }} value="remember"
               control={<Checkbox name="remember" color="primary" onChange={handleInputChange("remember")} />}
               label="Remember me" labelPlacement="end" />
           </FormControl>
+          */}
           <Button
             type="submit"
             fullWidth

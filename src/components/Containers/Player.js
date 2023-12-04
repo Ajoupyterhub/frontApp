@@ -183,11 +183,18 @@ const ContainerPlayer = (props) => {
     Server.statusWeb(user.id).then(r => {
       let url = `/app/${user.id}/web/`
       if(r.status == 'OK') {
+        setMessage(``);
         webWindowRef.current = window.open(url, `${user.id}_web`);    
       }
       else {
-        setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3000)`)
-        setTimeout(() => setMessage(null), 3500);
+        if(r.reason == undefined) {
+          setMessage(`VS-Code에서 web이 작동하지 않습니다.(port: 3000)`)
+          //setTimeout(() => setMessage(null), 3500);
+        }
+        else {
+          setMessage(` web server에 GET "/" 경로가 준비되지 않았습니다. ${r.msg} : ${r.reason}`)
+          //setTimeout(() => setMessage(null), 3500);
+        }
       }
     })
   }
