@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Box, IconButton, Popover } from '@mui/material';
 import { Login, HowToReg } from '@mui/icons-material';
-import { useSnackbar, useAuth } from '@lib/AppContext';
+import { useSnackbar, useAuth, useConfirm } from '@lib/AppContext';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
 import RegisterForm from '@components/Header/Register';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -22,6 +22,7 @@ const Auth = (props) => {
   let { login, mode, setLoginMode } = useAuth();
   let [openRegister, setOpenRegister] = useState(false);
   let navigate = useNavigate();
+  let wannaRegistration = useConfirm();
 
   const handleGoogleLoginSuccess = (userProfile) => {
 
@@ -34,6 +35,15 @@ const Auth = (props) => {
       else {
         console.log(`${d.user} : ${d.msg}`);
         snackbar("error", `login에 실패하였습니다. (${d.msg})`)
+        if(d.msg.startsWith("No such user")) {
+          wannaRegistration("등록되지 않은 사용자", "가입하시겠습니까?").then(d => {
+            if(d) {
+              setOpenRegister(true)
+            }
+            // else {
+            // }
+          })
+        }
       }
     }).catch(error => {
       console.log("Error Occurred when Sign In");
@@ -51,7 +61,7 @@ const Auth = (props) => {
 
   const handleGoogleLoginFailed = (msg, level='error') => {
     snackbar(level, msg);
-    console.log(`[${level} : ${msg}`);
+    console.log(`${level} : ${msg}`);
   }
 
   return (

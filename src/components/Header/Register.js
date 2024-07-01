@@ -68,24 +68,24 @@ const RegisterForm = (props) => {
   const verifyInputData = (data) => {
     const { academicID, dept, confirmPrivacy } = data;
 
-    const academicIDRegex = /^[0-9]{9}$/g;
-    if (academicIDRegex.test(academicID)) {
-      let first4 = parseInt(academicID.slice(0, 4));
-      let thisYear = parseInt((new Date()).getFullYear());
-      if (first4 < 1980 || first4 > thisYear) {
-        setErrorMsg("Invalid academic ID. Please, give me a valid academic ID.")
-        return false;
-      }
-    }
-    else {
-      if (academicID.length == 9) {
-        setErrorMsg("Invalid academic ID. Please, give me a valid academic ID")
-      }
-      else {
-        setErrorMsg('');
-      }
-      return false;
-    }
+    // const academicIDRegex = /^[0-9]{9}$/g;
+    // if (academicIDRegex.test(academicID)) {
+    //   let first4 = parseInt(academicID.slice(0, 4));
+    //   let thisYear = parseInt((new Date()).getFullYear());
+    //   if (first4 < 1980 || first4 > thisYear) {
+    //     setErrorMsg("Invalid academic ID. Please, give me a valid academic ID.")
+    //     return false;
+    //   }
+    // }
+    // else {
+    //   if (academicID.length == 9) {
+    //     setErrorMsg("Invalid academic ID. Please, give me a valid academic ID")
+    //   }
+    //   else {
+    //     setErrorMsg('');
+    //   }
+    //   return false;
+    // }
 
     if (dept.length < 1) {
       return false;
@@ -151,10 +151,10 @@ const RegisterForm = (props) => {
               <Input id="username" name="username" />
             </FormControl>
             */}
-          <FormControl margin="normal" required fullWidth>
+          {/* <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="academicID">학번 (또는 임용번호)</InputLabel>
             <Input id="academicID" name="academicID" onChange={handleInputChange("academicID")} />
-          </FormControl>
+          </FormControl> */}
 
 
           <FormControl margin="normal" required fullWidth>
