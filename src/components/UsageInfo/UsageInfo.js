@@ -3,7 +3,8 @@ import { Box, Chip, Paper, Typography } from '@mui/material';
 import { Chart } from 'react-google-charts';
 import { styled } from '@mui/material/styles';
 import { currentUser, UIContext } from '@lib/AppContext';
-import HelpMeMessage from '@components/HelpMe/HelpMe';
+//import HelpMeMessage from '@components/HelpMe/HelpMe';
+import SignupSlack from '@components/HelpMe/SignupSlack';
 
 const styles = {
   root: {
@@ -139,7 +140,7 @@ const UsageInfo = (props) => {
   return (
     <Paper sx={styles.root}>
       <AccessLog userID={props.userID} sx={styles.accessLog} />
-      <HelpMeMessage />
+      <SignupSlack />
       <Usage userID={props.userID} sx={styles.usage} />
     </Paper>
   )

@@ -181,7 +181,7 @@ const ContainerPlayer = (props) => {
 
   const handleWebBtnClick = () => {
     Server.statusWeb(user.id).then(r => {
-      let url = `/app/${user.id}/web/`
+      let url = `/app/${user.id}/web/` // code/proxy/3000/`
       if(r.status == 'OK') {
         setMessage(``);
         webWindowRef.current = window.open(url, `${user.id}_web`);    

@@ -68,9 +68,13 @@ const Containers = (props) => {
     });
   }, [user])
 
+  const handleOnFocus = (e) => {
+    console.log("Focused..");
+  }
+
   return (
     <div style={styles.containerPaper}>
-      <Box sx={styles.rightPane}>
+      <Box sx={styles.rightPane} >
         <Typography variant="h6" sx={{ padding: 1 }}>
             매일 새벽 4시에 모든 컨테이너가 사용 중지 됩니다. 기계학습이 필요한 작업은 미리 알려주기 바랍니다.
         </Typography>

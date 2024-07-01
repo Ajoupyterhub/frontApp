@@ -24,6 +24,7 @@ const Auth = (props) => {
   let navigate = useNavigate();
 
   const handleGoogleLoginSuccess = (userProfile) => {
+
     Server.googleLogin(userProfile).then((d) => {
       if (d.msg === "OK") {
         login(d.user);
