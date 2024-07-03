@@ -13,7 +13,7 @@ export default function ConfirmDialog(props) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title" sx={{width : 300}}>{props.title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {props.message}

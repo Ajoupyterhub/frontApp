@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
 import {
-  Box, FormControl, Input, InputLabel, Checkbox,
+  Box, Button, FormControl, Input, InputLabel, Checkbox,
   Typography, FormControlLabel, FormLabel, RadioGroup, Radio
 } from '@mui/material';
-import { useSnackbar } from '@lib/AppContext';
+import { useSnackbar, useAuth } from '@lib/AppContext';
 import Server from '@lib/server';
 import GoogleSignInBtn from '@components/Header/GoogleSignIn';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const styles = {
   paper: {
@@ -41,8 +42,11 @@ const styles = {
   },
 }
 
-const RegisterForm = (props) => {
+const RegisterForm = ({onClose, loginUser}) => {
   const snackbar = useSnackbar();
+  const {login} = useAuth();
+  const navigate = useNavigate();
+
   let [registerData, setRegisterData] = useState(
     {
       academicID: '',
@@ -104,33 +108,37 @@ const RegisterForm = (props) => {
     data["academicID"] = registerData.academicID;
     data["dept"] = registerData.dept;
     data["primary_role"] = registerData.primary_role;
-    data["email"] = res.email; 
-    data["name"] = res.name; 
-    data["picture"] = res.picture; 
+    data["email"] = loginUser.email; //res.email; 
+    data["name"] = loginUser.name;  //res.name; 
+    data["picture"] = loginUser.picture; //res.picture; 
     data["loginType"] = "Google";
     console.log(data)
 
     Server.registerUser(data).then((d) => {
+      console.log(d.msg)
       if (d.msg != "OK") {
         console.log(d.msg);
         snackbar("error", d.msg);
       }
       else {
         snackbar("success", "회원 가입이 완료되었습니다.");
+        // login(loginUser);
+        // navigate('/user', { replace: true });
       }
     }).catch(e => {
       console.log("Server.registerUser Error", e);
       snackbar("error", "Server.registerUser Error")
       setErrorMsg(e);
+    }).then(() => {
+      onClose();
     });
-    props.onClose();
     return;
   }
 
   const handleRegisterFailed = (msg, level='error') => {
     console.log(`Register Failed: ${msg}`);
     snackbar(level, msg);
-    props.onClose();
+    onClose();
   }
   
   return (
@@ -139,7 +147,7 @@ const RegisterForm = (props) => {
         <Typography variant="h6">
           가입하고 코딩하기 (Register)
         </Typography>
-        <form sx={styles.form} onSubmit={handleRegisterBtn} >
+        <form sx={styles.form} /* onSubmit={handleRegisterBtn} */ >
           {/*
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Ajou Email Address</InputLabel>
@@ -150,11 +158,10 @@ const RegisterForm = (props) => {
               <InputLabel htmlFor="username">이름</InputLabel>
               <Input id="username" name="username" />
             </FormControl>
-            */}
-          {/* <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="academicID">학번 (또는 임용번호)</InputLabel>
-            <Input id="academicID" name="academicID" onChange={handleInputChange("academicID")} />
-          </FormControl> */}
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="academicID">학번 (또는 임용번호)</InputLabel>
+              <Input id="academicID" name="academicID" onChange={handleInputChange("academicID")} />
+            </FormControl> */}
 
 
           <FormControl margin="normal" required fullWidth>
@@ -216,24 +223,24 @@ const RegisterForm = (props) => {
                 onChange={handleInputChange("confirmPrivacy")} />}
               label="동의합니다." labelPlacement="end" />
           </FormControl>
-          <FormControl component="fieldset" margin="normal" required fullWidth>
+          {/* <FormControl component="fieldset" margin="normal" required fullWidth>
             <GoogleSignInBtn onSuccess={handleRegisterBtn} onFailed={handleRegisterFailed}
               disabled={!verified} />
-          </FormControl>
+          </FormControl> */}
 
-          {/*
+          
             <Button
-              type="submit"
+              /* type="submit" */
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
-              //onClick={this.handleRegisterBtn} // Must remove to get FormData. FormData uses Form submit
-              disabled={registerData.academicID.length < 9  || registerData.dept.length < 1 || !registerData.confirmPrivacy}
+              sx={styles.submit}
+              onClick={handleRegisterBtn} // Must remove to get FormData. FormData uses Form submit
+              disabled={!verified}
             >
-              Register
+              가입
             </Button>
-            */}
+           
           {/*
             <Typography className={classes.submit} fullWidth centered> 
                Google 인증(OAuth)으로 Ajou Email Address와 이름을 확인합니다. 
