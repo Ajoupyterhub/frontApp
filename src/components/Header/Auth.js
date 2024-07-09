@@ -65,6 +65,12 @@ const Auth = (props) => {
     return;
   }
 
+  const handleRegisterFormClose = (e) => {
+    if (e) { // Dialog  바깥에 클릭한 경우
+      snackbar("warning", "가입을 취소하였습니다.")
+    }
+    setOpenRegister(false)
+  }
 
   const handleGoogleLoginFailed = (msg, level='error') => {
     snackbar(level, msg);
@@ -86,7 +92,7 @@ const Auth = (props) => {
       </Box>
       <Popover  /* Popover for RegisterForm */
         open={openRegister}
-        onClose={() => setOpenRegister(false)}
+        onClose={handleRegisterFormClose}
         anchorEl={document.getElementById("__header__")}
         anchorOrigin={{
           vertical: 'bottom',
@@ -97,7 +103,7 @@ const Auth = (props) => {
           horizontal: 'center',
         }}
       >
-        <RegisterForm onClose={()=>setOpenRegister(false)} loginUser={loginUser}/>
+        <RegisterForm onClose={handleRegisterFormClose} loginUser={loginUser}/>
       </Popover>
     </GoogleOAuthProvider>
   )

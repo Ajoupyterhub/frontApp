@@ -102,7 +102,7 @@ const RegisterForm = ({onClose, loginUser}) => {
     return true;
   }
 
-  const handleRegisterBtn = (res) => {
+  const handleRegisterBtn = (event, res) => {
 
     let data = {}
     data["academicID"] = registerData.academicID;
@@ -112,18 +112,14 @@ const RegisterForm = ({onClose, loginUser}) => {
     data["name"] = loginUser.name;  //res.name; 
     data["picture"] = loginUser.picture; //res.picture; 
     data["loginType"] = "Google";
-    console.log(data)
 
     Server.registerUser(data).then((d) => {
-      console.log(d.msg)
+      // console.log(d.msg)
       if (d.msg != "OK") {
-        console.log(d.msg);
         snackbar("error", d.msg);
       }
       else {
         snackbar("success", "회원 가입이 완료되었습니다.");
-        // login(loginUser);
-        // navigate('/user', { replace: true });
       }
     }).catch(e => {
       console.log("Server.registerUser Error", e);
@@ -214,7 +210,7 @@ const RegisterForm = ({onClose, loginUser}) => {
             개인정보 수집 및 이용 동의
           </Typography>
           <Typography sx={styles.submit} variant='body2'>
-            귀하의 개인정보 (학번 또는 임용번호, 이메일, 소속학과, 이름) 수집에 동의합니다.
+            귀하의 개인정보 (이메일, 소속학과, 이름) 수집에 동의합니다.
           </Typography>
 
           <FormControl component="fieldset" margin="normal" required fullWidth>
