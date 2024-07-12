@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Tabs, Tab } from '@mui/material';
-import { Group, ListAlt } from '@mui/icons-material';
+//import { Tabs, Tab } from '@mui/material';
 import Containers from '@components/Containers/Containers';
-import GroupList from '@components/Group/GroupList';
 import { currentUser } from '@lib/AppContext';
 
 const styles = {
@@ -66,7 +64,7 @@ const MyPage = (props) => {
   return (
     <React.Fragment>
       <div style={classes.root} >
-        <Tabs sx={classes.tabs}
+        {/* <Tabs sx={classes.tabs}
           orientation="vertical"
           value={currentTab}
           onChange={handleTabChange}
@@ -74,9 +72,9 @@ const MyPage = (props) => {
           <Tab sx={styles.tabIcon} label="" icon={<ListAlt />} value={0} />
           <Tab sx={styles.tabIcon} label="" icon={<Group />} value={1}
             disabled={!canControlGroups()} />
-        </Tabs>
+        </Tabs> */}
 
-        {(currentTab) ? <GroupList /> : <Containers />}
+        <Containers /> {/* {(currentTab) ? <GroupList /> : <Containers />} */ }
       </div>
     </React.Fragment>
   );
